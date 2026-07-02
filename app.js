@@ -1,7 +1,7 @@
 const DEFAULT_STATE = {
   gold: 4127.499,
   silver: 61.625,
-  source: 'server snapshot unavailable — showing built-in backup values',
+  source: 'Live prices are temporarily unavailable — showing the last available pricing view',
   updatedAt: null,
 };
 
@@ -28,10 +28,10 @@ function money(value) {
 }
 
 function formatUpdatedAt(value) {
-  if (!value) return 'Waiting for first backend update';
+  if (!value) return 'Waiting for the latest market update';
   const updated = new Date(value);
-  if (Number.isNaN(updated.getTime())) return 'Waiting for first backend update';
-  return `Backend snapshot ${updated.toLocaleString([], {
+  if (Number.isNaN(updated.getTime())) return 'Waiting for the latest market update';
+  return `Updated ${updated.toLocaleString([], {
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
@@ -55,7 +55,7 @@ function loadCachedPrices() {
     if (!cached) return false;
     if (!Number.isFinite(Number(cached.silver)) || !Number.isFinite(Number(cached.gold))) return false;
     Object.assign(state, cached, {
-      source: `${cached.source || 'Saved backend snapshot'} — using last saved prices`,
+      source: `${cached.source || 'Saved market pricing'} — showing last saved prices`,
     });
     return true;
   } catch {
@@ -64,7 +64,7 @@ function loadCachedPrices() {
 }
 
 async function refreshPrices() {
-  if (els.marketStatus) els.marketStatus.textContent = 'Refreshing backend spot-price snapshot…';
+  if (els.marketStatus) els.marketStatus.textContent = 'Refreshing live spot prices…';
   try {
     const response = await fetch(`./data/prices.json?v=${Date.now()}`, {
       cache: 'no-store',
@@ -81,13 +81,13 @@ async function refreshPrices() {
       silver,
       gold,
       updatedAt: snapshot.updatedAt || new Date().toISOString(),
-      source: `Live backend snapshot loaded • ${snapshot?.spot?.source || 'server-side metals feed'}`,
+      source: `Live spot prices • ${snapshot?.spot?.source || 'market feed'}`,
     });
     localStorage.setItem('cctp-price-cache', JSON.stringify(state));
   } catch (error) {
     if (!loadCachedPrices()) {
       Object.assign(state, DEFAULT_STATE, {
-        source: 'Live backend snapshot unavailable — showing built-in backup values',
+        source: 'Live prices are temporarily unavailable — showing the last available pricing view',
       });
     }
   }

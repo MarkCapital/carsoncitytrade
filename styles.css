@@ -280,19 +280,27 @@ h1 {
 .price-card small { display: block; margin-top: 10px; color: var(--ink-soft); }
 .price-card.ratio strong { font-size: clamp(30px, 2.8vw, 40px); }
 .price-card.utility { padding-right: 24px; }
-.price-card.ratio .metal-icon { font-size: 16px; letter-spacing: .04em; }
+.price-card.ratio .metal-icon {
+  font-size: 13px;
+  letter-spacing: .02em;
+  line-height: 1;
+  padding: 0 6px;
+  text-align: center;
+}
 .metal-icon {
   position: absolute;
   top: 20px;
   right: 20px;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   display: grid;
   place-items: center;
   font-weight: 900;
+  line-height: 1;
   background: #f2d37c;
   color: #7f5410;
+  overflow: hidden;
 }
 .silver .metal-icon { background: #e6e9e4; color: #57615d; }
 .utility strong { color: var(--ink); font-size: 44px; }
