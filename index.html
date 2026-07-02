@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Carson City Trade | Purveyor of Rare Coins</title>
+  <meta name="description" content="Carson City Trade sells rare coins, offers appraisal services, and helps people learn about investing in gold and silver in Mount Airy, North Carolina." />
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/favicons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicons/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicons/favicon-16x16.png" />
+  <link rel="shortcut icon" href="./assets/favicons/favicon.ico" />
+  <link rel="manifest" href="./assets/favicons/site.webmanifest" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;800&family=Nunito:wght@400;700;900&family=Rye&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="site-note">Mount Airy, North Carolina • Rare coins, appraisals, and precious metals guidance</div>
+
+  <header class="header" id="top">
+    <div class="wrap nav">
+      <a class="brand" href="#top" aria-label="Carson City Trade home">
+        <span class="brand-mark">CC</span>
+        <span>
+          Carson City Trade
+          <small>Purveyor of Rare Coins</small>
+        </span>
+      </a>
+      <button class="menu-button" type="button" aria-label="Toggle menu" aria-expanded="false">Menu</button>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#appraisals">Rare Coins</a>
+        <a href="#appraisals">Appraisals</a>
+        <a href="#story">Carson City Story</a>
+        <a href="#investing">Gold & Silver</a>
+        <a href="#market">Spot Prices</a>
+        <a class="nav-cta" href="#contact">Request Appraisal</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Mount Airy, North Carolina • Rare coins for sale • Appraisals • Gold & silver</p>
+          <h1>Selling rare coins and appraising collections with old-fashioned care.</h1>
+          <p class="lead">Carson City Trade is here for collectors looking for rare coins, families with collections to evaluate, and anyone wanting to invest in gold and silver coins.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#contact">Request an appraisal</a>
+            <a class="button secondary" href="#contact">Ask about coins for sale</a>
+          </div>
+          <div class="trust-row" aria-label="Services summary">
+            <span>Rare coins for sale</span>
+            <span>Appraisal services</span>
+            <span>Gold & silver investing</span>
+            <span>Morgan dollars</span>
+          </div>
+        </div>
+        <aside class="feature-window" aria-label="Featured Carson City coin story">
+          <div class="coin-photo-window">
+            <img src="./assets/morgan-dollar-real.jpg" alt="Actual Morgan silver dollar coin" />
+          </div>
+          <div class="feature-caption">
+            <p class="label">Rare coin focus</p>
+            <h2>Morgan Silver Dollars & collectible coins</h2>
+            <p>Actual rare coins are the focus — selling collectible pieces, appraising collections, and helping collectors understand what they have.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="wrap section services" id="appraisals" aria-labelledby="services-title">
+      <div class="section-heading centered">
+        <p class="eyebrow">Primary services</p>
+        <h2 id="services-title">Rare coins for sale, appraisal services, and gold and silver investment guidance.</h2>
+      </div>
+      <div class="service-grid primary-services">
+        <article class="service-card service-feature">
+          <h3>Rare coins for sale</h3>
+          <p>For collectors interested in silver dollars, gold coins, bullion, type coins, Morgan dollars, and historically interesting numismatic pieces.</p>
+          <a href="#contact">Ask about coins for sale →</a>
+        </article>
+        <article class="service-card service-feature">
+          <h3>Appraisal services</h3>
+          <p>Clear appraisal guidance for inherited collections, individual rare coins, silver and gold holdings, and coins that may deserve professional attention.</p>
+          <a href="#contact">Request an appraisal →</a>
+        </article>
+        <article class="service-card service-feature investment-card" id="investing">
+          <h3>Gold & silver investing help</h3>
+          <p>For people interested in owning physical precious metals, Carson City Trade can explain common options, premiums, melt value, bullion, and collectible coins in plain language.</p>
+          <a href="#contact">Ask about gold & silver →</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="market-band" id="market" aria-labelledby="market-title">
+      <div class="wrap">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">Live metals board</p>
+            <h2 id="market-title">Gold & silver spot prices</h2>
+          </div>
+          <div class="market-status" id="marketStatus">Loading live pricing…</div>
+        </div>
+        <div class="price-grid">
+          <article class="price-card gold">
+            <span class="metal-icon">Au</span>
+            <p>Gold spot</p>
+            <strong id="goldPrice">—</strong>
+            <small>per troy ounce</small>
+          </article>
+          <article class="price-card silver">
+            <span class="metal-icon">Ag</span>
+            <p>Silver spot</p>
+            <strong id="silverPrice">—</strong>
+            <small>per troy ounce</small>
+          </article>
+          <article class="price-card ratio">
+            <span class="metal-icon">Au/Ag</span>
+            <p>Gold / silver ratio</p>
+            <strong id="goldSilverRatio">—</strong>
+            <small>ounces of silver equal 1 oz gold</small>
+          </article>
+          <article class="price-card utility">
+            <p>Refresh schedule</p>
+            <strong>10 min</strong>
+            <small id="lastUpdated">Waiting for first update</small>
+            <button class="text-button" type="button" id="refreshPrices">Refresh now</button>
+          </article>
+        </div>
+        <p class="fine-print">Live prices are pulled from a public metals price endpoint when available, then cached in the browser. If you ever want maximum reliability, this can be upgraded to a paid metals feed later.</p>
+      </div>
+    </section>
+
+    <section class="story-section" id="story" aria-labelledby="story-title">
+      <div class="wrap story-grid">
+        <div class="story-panel">
+          <p class="eyebrow">Why “Carson City”?</p>
+          <h2 id="story-title">A nod to one of America’s favorite mint marks.</h2>
+          <p>The Carson City Mint struck coins in Nevada during the silver boom years. Today, the small “CC” mint mark carries a lot of romance for collectors — a tangible link to frontier history, silver mining, and the Old West.</p>
+          <p>That spirit is the inspiration for Carson City Trade: serious about rare coins, respectful of history, and focused on helping people collect, understand, and appraise with confidence.</p>
+        </div>
+        <div class="morgan-card">
+          <p class="label">Favorite focus</p>
+          <h3>Carson City Morgan Silver Dollars</h3>
+          <p>Morgan dollars minted in Carson City are among the most recognizable and sought-after silver dollars. The final site can include a short educational guide to CC Morgan dates, mint marks, and collecting tips.</p>
+          <a href="#contact">Ask about a Morgan dollar →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap section calculators" id="calculators" aria-labelledby="calculator-title">
+      <div class="section-heading split-heading">
+        <div>
+          <p class="eyebrow">Collector tools</p>
+          <h2 id="calculator-title">Silver calculators built around the live spot price.</h2>
+        </div>
+        <p class="section-summary">Use these for quick estimates when thinking about silver value or precious-metals purchases. Final values should still be confirmed in person because condition, date, mint mark, premium, and collector demand matter.</p>
+      </div>
+
+      <div class="calculator-layout">
+        <article class="calculator-card active" data-calculator="junk">
+          <div class="calculator-header">
+            <span>90%</span>
+            <div>
+              <h3>Junk silver calculator</h3>
+              <p>Estimate melt value for common 90% U.S. silver coins.</p>
+            </div>
+          </div>
+          <label for="junkFace">Face value of 90% silver coins</label>
+          <div class="input-row">
+            <span>$</span>
+            <input id="junkFace" type="number" min="0" step="0.10" value="10" />
+          </div>
+          <label for="junkPremium">Optional premium over melt</label>
+          <div class="input-row">
+            <input id="junkPremium" type="number" step="0.5" value="0" />
+            <span>%</span>
+          </div>
+          <button class="button primary full" type="button" id="junkCalculate">Calculate junk silver</button>
+          <div class="result-box" id="junkResult">Enter face value to estimate melt.</div>
+          <p class="formula">Uses 0.715 troy oz silver per $1 face value for circulated 90% silver.</p>
+        </article>
+
+        <article class="calculator-card" data-calculator="silver-value">
+          <div class="calculator-header">
+            <span>Ag</span>
+            <div>
+              <h3>Silver value calculator</h3>
+              <p>Estimate silver melt value by weight and purity.</p>
+            </div>
+          </div>
+          <div class="two-col">
+            <label>Weight
+              <input id="silverWeight" type="number" min="0" step="0.01" value="1" />
+            </label>
+            <label>Unit
+              <select id="silverUnit">
+                <option value="toz">Troy ounces</option>
+                <option value="grams">Grams</option>
+                <option value="avoirdupois">Regular ounces</option>
+              </select>
+            </label>
+          </div>
+          <label for="silverPurity">Silver purity</label>
+          <div class="input-row">
+            <input id="silverPurity" type="number" min="0" max="100" step="0.1" value="90" />
+            <span>%</span>
+          </div>
+          <button class="button primary full" type="button" id="silverCalculate">Calculate silver value</button>
+          <div class="result-box" id="silverResult">Enter weight and purity to estimate value.</div>
+        </article>
+
+        <article class="calculator-card" data-calculator="breakeven">
+          <div class="calculator-header">
+            <span>BE</span>
+            <div>
+              <h3>Break-even calculator</h3>
+              <p>See what silver spot price you need to break even.</p>
+            </div>
+          </div>
+          <label for="purchasePrice">Total purchase price</label>
+          <div class="input-row">
+            <span>$</span>
+            <input id="purchasePrice" type="number" min="0" step="0.01" value="350" />
+          </div>
+          <label for="pureOunces">Pure silver ounces owned</label>
+          <input id="pureOunces" type="number" min="0" step="0.001" value="10" />
+          <button class="button primary full" type="button" id="breakevenCalculate">Calculate break-even</button>
+          <div class="result-box" id="breakevenResult">Enter cost and ounces to estimate break-even spot.</div>
+        </article>
+      </div>
+    </section>
+
+    <section class="contact-section" id="contact" aria-labelledby="contact-title">
+      <div class="wrap contact-grid">
+        <div>
+          <p class="eyebrow">Request to be contacted</p>
+          <h2 id="contact-title">Looking for rare coins, an appraisal, or gold & silver guidance?</h2>
+          <p>Use this form to ask about coins for sale, request an appraisal appointment, ask about physical gold and silver, or send a follow-up question. When you submit it, your email app will open a message addressed directly to Carson City Trade.</p>
+          <ul class="contact-list">
+            <li>Phone: <a href="tel:3367802826">336-780-2826</a></li>
+            <li>Email: <a href="mailto:carsoncity1889@gmail.com">carsoncity1889@gmail.com</a></li>
+            <li>Based in Mount Airy, NC</li>
+          </ul>
+        </div>
+        <form class="contact-form" id="contactForm">
+          <label>Name
+            <input name="name" required placeholder="Your name" />
+          </label>
+          <div class="two-col">
+            <label>Email
+              <input name="email" type="email" placeholder="you@example.com" />
+            </label>
+            <label>Phone
+              <input name="phone" placeholder="336-780-2826" />
+            </label>
+          </div>
+          <label>What can he help with?
+            <select name="reason">
+              <option>Appraisal request</option>
+              <option>I am interested in rare coins for sale</option>
+              <option>I want to buy rare coins</option>
+              <option>I am interested in investing in gold or silver</option>
+              <option>Question about Morgan silver dollars</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label>Message
+            <textarea name="message" rows="5" placeholder="Tell us a little about the coins, collection, or appraisal need..."></textarea>
+          </label>
+          <button class="button primary full" type="submit">Open email request</button>
+          <p class="form-note" id="formNote">This opens your email app with your request addressed to Carson City Trade.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-grid">
+      <div>
+        <strong>Carson City Trade</strong>
+        <p>Purveyor of Rare Coins</p>
+      </div>
+      <p>Rare coins • Appraisals • Silver & gold • Mount Airy, NC</p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>

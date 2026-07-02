@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" role="img" aria-labelledby="title desc">
+  <title id="title">Morgan silver dollar illustration</title>
+  <desc id="desc">A stylized Morgan silver dollar with Liberty profile, stars, date, and CC mint mark.</desc>
+  <defs>
+    <radialGradient id="silver" cx="38%" cy="26%" r="78%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.28" stop-color="#e9ece9"/>
+      <stop offset="0.62" stop-color="#b8bfbb"/>
+      <stop offset="1" stop-color="#6f7975"/>
+    </radialGradient>
+    <radialGradient id="inner" cx="38%" cy="24%" r="68%">
+      <stop offset="0" stop-color="#fffef9"/>
+      <stop offset="0.55" stop-color="#d9ddd9"/>
+      <stop offset="1" stop-color="#a4aca8"/>
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#000" flood-opacity="0.32"/>
+    </filter>
+    <path id="topArc" d="M178 420a272 272 0 0 1 544 0"/>
+    <path id="bottomArc" d="M695 522a272 272 0 0 1-490 0"/>
+  </defs>
+  <rect width="900" height="900" fill="none"/>
+  <g filter="url(#shadow)">
+    <circle cx="450" cy="450" r="382" fill="url(#silver)"/>
+    <circle cx="450" cy="450" r="352" fill="none" stroke="#f9fbf8" stroke-width="10" opacity="0.85"/>
+    <circle cx="450" cy="450" r="319" fill="url(#inner)" stroke="#7f8985" stroke-width="6"/>
+    <circle cx="450" cy="450" r="292" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.55"/>
+    <g font-family="Georgia, 'Times New Roman', serif" fill="#59635f" font-weight="700" letter-spacing="7">
+      <text font-size="46"><textPath href="#topArc" startOffset="50%" text-anchor="middle">E PLURIBUS UNUM</textPath></text>
+      <text font-size="38"><textPath href="#bottomArc" startOffset="50%" text-anchor="middle">ONE DOLLAR</textPath></text>
+    </g>
+    <g fill="#f7f9f5" stroke="#67716d" stroke-width="3" opacity="0.9">
+      <path d="M222 360l10 21 23 3-17 16 4 23-20-11-20 11 4-23-17-16 23-3z"/>
+      <path d="M679 360l10 21 23 3-17 16 4 23-20-11-20 11 4-23-17-16 23-3z"/>
+      <path d="M242 530l10 21 23 3-17 16 4 23-20-11-20 11 4-23-17-16 23-3z"/>
+      <path d="M657 530l10 21 23 3-17 16 4 23-20-11-20 11 4-23-17-16 23-3z"/>
+    </g>
+    <g transform="translate(238 188)">
+      <path d="M288 75c80 34 124 112 116 202-6 72-45 137-105 173-28 17-61 26-97 29 12 28 28 49 55 74-86-8-153-46-193-107-41-62-46-139-17-211 31-78 94-133 177-153 22-5 43-7 64-7z" fill="#eef1ee" stroke="#68736e" stroke-width="10"/>
+      <path d="M252 104c-28 54-33 122-6 179 23 48 63 83 110 101-18 29-43 53-76 69-20 10-45 16-75 19 6 16 18 37 38 62-75-20-124-72-143-136-21-72 1-151 54-210 28-31 61-58 98-84z" fill="#cfd5d1" opacity="0.8"/>
+      <path d="M177 206c45-32 102-54 168-62 28 12 52 30 70 52-99-5-177 12-238 52z" fill="#fbfcf8" stroke="#7f8985" stroke-width="8"/>
+      <path d="M119 242c62 8 127-7 194-45" fill="none" stroke="#6d7773" stroke-width="12" stroke-linecap="round"/>
+      <circle cx="287" cy="270" r="13" fill="#53605b"/>
+      <path d="M330 329c-31 16-67 16-103 0" fill="none" stroke="#6d7773" stroke-width="10" stroke-linecap="round"/>
+      <path d="M214 144l19-51 21 50 53-22-25 50 49 28-56 8-7 56-37-42-51 25 16-54-43-36z" fill="#f7f9f5" stroke="#68736e" stroke-width="7"/>
+      <g stroke="#68736e" stroke-width="8" stroke-linecap="round">
+        <path d="M145 361c-38 22-67 55-82 97"/>
+        <path d="M174 382c-34 28-57 64-66 106"/>
+        <path d="M209 397c-26 30-43 66-48 107"/>
+      </g>
+    </g>
+    <text x="450" y="724" text-anchor="middle" font-family="Georgia, serif" font-size="56" font-weight="700" fill="#59635f" letter-spacing="7">1889</text>
+    <text x="450" y="775" text-anchor="middle" font-family="Georgia, serif" font-size="38" font-weight="700" fill="#59635f" letter-spacing="5">CC</text>
+  </g>
+</svg>
