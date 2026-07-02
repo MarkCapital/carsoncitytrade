@@ -1,7 +1,7 @@
 const DEFAULT_STATE = {
   gold: 4127.499,
   silver: 61.625,
-  source: 'Live prices are temporarily unavailable — showing the last available pricing view',
+  source: 'Live prices are temporarily unavailable. Please check back shortly.',
   updatedAt: null,
 };
 
@@ -28,10 +28,10 @@ function money(value) {
 }
 
 function formatUpdatedAt(value) {
-  if (!value) return 'Waiting for the latest market update';
+  if (!value) return 'Latest market update coming in';
   const updated = new Date(value);
-  if (Number.isNaN(updated.getTime())) return 'Waiting for the latest market update';
-  return `Updated ${updated.toLocaleString([], {
+  if (Number.isNaN(updated.getTime())) return 'Latest market update coming in';
+  return `Last updated ${updated.toLocaleString([], {
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
@@ -55,7 +55,7 @@ function loadCachedPrices() {
     if (!cached) return false;
     if (!Number.isFinite(Number(cached.silver)) || !Number.isFinite(Number(cached.gold))) return false;
     Object.assign(state, cached, {
-      source: `${cached.source || 'Saved market pricing'} — showing last saved prices`,
+      source: `${cached.source || 'Recent market pricing'} — showing recently saved prices`,
     });
     return true;
   } catch {
@@ -64,7 +64,7 @@ function loadCachedPrices() {
 }
 
 async function refreshPrices() {
-  if (els.marketStatus) els.marketStatus.textContent = 'Refreshing live spot prices…';
+  if (els.marketStatus) els.marketStatus.textContent = 'Refreshing market pricing…';
   try {
     const response = await fetch(`./data/prices.json?v=${Date.now()}`, {
       cache: 'no-store',
@@ -81,13 +81,13 @@ async function refreshPrices() {
       silver,
       gold,
       updatedAt: snapshot.updatedAt || new Date().toISOString(),
-      source: `Live spot prices • ${snapshot?.spot?.source || 'market feed'}`,
+      source: 'Live market pricing updated automatically',
     });
     localStorage.setItem('cctp-price-cache', JSON.stringify(state));
   } catch (error) {
     if (!loadCachedPrices()) {
       Object.assign(state, DEFAULT_STATE, {
-        source: 'Live prices are temporarily unavailable — showing the last available pricing view',
+        source: 'Live prices are temporarily unavailable. Please check back shortly.',
       });
     }
   }
@@ -177,7 +177,7 @@ function setupContactForm() {
     const body = lines.join('\n');
     const href = `mailto:carsoncity1889@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.location.href = href;
-    note.textContent = 'Your email app should open with this request addressed to Carson City Trade.';
+    note.textContent = 'An email draft should open addressed to Carson City Trade.';
     note.classList.add('success');
   });
 }
