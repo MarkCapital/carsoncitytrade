@@ -1,9 +1,11 @@
-const state = {
-  gold: 4331.90,
-  silver: 68.74,
-  source: 'fallback demo values',
+const DEFAULT_STATE = {
+  gold: 4127.499,
+  silver: 61.625,
+  source: 'server snapshot unavailable — showing built-in backup values',
   updatedAt: null,
 };
+
+const state = { ...DEFAULT_STATE };
 
 const els = {
   goldPrice: document.querySelector('#goldPrice'),
@@ -25,55 +27,75 @@ function money(value) {
   });
 }
 
+function formatUpdatedAt(value) {
+  if (!value) return 'Waiting for first backend update';
+  const updated = new Date(value);
+  if (Number.isNaN(updated.getTime())) return 'Waiting for first backend update';
+  return `Backend snapshot ${updated.toLocaleString([], {
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  })}`;
+}
+
 function renderPrices() {
   els.goldPrice.textContent = money(state.gold);
   els.silverPrice.textContent = money(state.silver);
   const ratio = Number(state.gold) > 0 && Number(state.silver) > 0 ? Number(state.gold) / Number(state.silver) : 0;
   if (els.goldSilverRatio) els.goldSilverRatio.textContent = ratio ? `${ratio.toFixed(1)}:1` : '—';
-  const updated = state.updatedAt ? new Date(state.updatedAt) : new Date();
-  els.lastUpdated.textContent = `Updated ${updated.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`;
-  els.marketStatus.textContent = state.source === 'live'
-    ? 'Live market data loaded'
-    : 'Using saved fallback prices';
+  if (els.lastUpdated) els.lastUpdated.textContent = formatUpdatedAt(state.updatedAt);
+  if (els.marketStatus) els.marketStatus.textContent = state.source;
   calculateAll();
 }
 
-async function fetchMetal(symbol) {
-  const response = await fetch(`https://api.gold-api.com/price/${symbol}`, {
-    headers: { accept: 'application/json' },
-    cache: 'no-store',
-  });
-  if (!response.ok) throw new Error(`${symbol} price request failed`);
-  return response.json();
+function loadCachedPrices() {
+  try {
+    const cached = JSON.parse(localStorage.getItem('cctp-price-cache') || 'null');
+    if (!cached) return false;
+    if (!Number.isFinite(Number(cached.silver)) || !Number.isFinite(Number(cached.gold))) return false;
+    Object.assign(state, cached, {
+      source: `${cached.source || 'Saved backend snapshot'} — using last saved prices`,
+    });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function refreshPrices() {
-  els.marketStatus.textContent = 'Refreshing live market data…';
+  if (els.marketStatus) els.marketStatus.textContent = 'Refreshing backend spot-price snapshot…';
   try {
-    const [gold, silver] = await Promise.all([fetchMetal('XAU'), fetchMetal('XAG')]);
-    if (!Number.isFinite(Number(gold.price)) || !Number.isFinite(Number(silver.price))) {
-      throw new Error('Invalid metals response');
+    const response = await fetch(`./data/prices.json?v=${Date.now()}`, {
+      cache: 'no-store',
+      headers: { accept: 'application/json' },
+    });
+    if (!response.ok) throw new Error('snapshot request failed');
+    const snapshot = await response.json();
+    const silver = Number(snapshot?.spot?.silver);
+    const gold = Number(snapshot?.spot?.gold);
+    if (!Number.isFinite(silver) || !Number.isFinite(gold) || silver <= 0 || gold <= 0) {
+      throw new Error('snapshot returned invalid prices');
     }
-    state.gold = Number(gold.price);
-    state.silver = Number(silver.price);
-    state.updatedAt = gold.updatedAt || silver.updatedAt || new Date().toISOString();
-    state.source = 'live';
+    Object.assign(state, {
+      silver,
+      gold,
+      updatedAt: snapshot.updatedAt || new Date().toISOString(),
+      source: `Live backend snapshot loaded • ${snapshot?.spot?.source || 'server-side metals feed'}`,
+    });
     localStorage.setItem('cctp-price-cache', JSON.stringify(state));
   } catch (error) {
-    const cached = localStorage.getItem('cctp-price-cache');
-    if (cached) {
-      try {
-        Object.assign(state, JSON.parse(cached));
-        state.source = state.source === 'live' ? 'live' : 'cached fallback';
-      } catch {}
+    if (!loadCachedPrices()) {
+      Object.assign(state, DEFAULT_STATE, {
+        source: 'Live backend snapshot unavailable — showing built-in backup values',
+      });
     }
-    els.marketStatus.textContent = 'Live pricing unavailable — using saved fallback';
   }
   renderPrices();
 }
 
 function getSilverSpot() { return Number(state.silver || 0); }
-function getValue(id) { return Number(document.querySelector(id)?.value || 0); }
+function getValue(selector) { return Number(document.querySelector(selector)?.value || 0); }
 
 function calculateJunkSilver() {
   const face = getValue('#junkFace');
@@ -96,7 +118,7 @@ function convertToTroyOunces(weight, unit) {
 function calculateSilverValue() {
   const weight = getValue('#silverWeight');
   const purity = getValue('#silverPurity') / 100;
-  const unit = document.querySelector('#silverUnit').value;
+  const unit = document.querySelector('#silverUnit')?.value || 'toz';
   const troy = convertToTroyOunces(weight, unit);
   const pureOunces = troy * purity;
   const value = pureOunces * getSilverSpot();
@@ -128,8 +150,9 @@ function calculateAll() {
 }
 
 function setupCalculators() {
-  ['#junkFace', '#junkPremium', '#silverWeight', '#silverPurity', '#silverUnit', '#purchasePrice', '#pureOunces']
-    .forEach(selector => document.querySelector(selector)?.addEventListener('input', calculateAll));
+  ['#junkFace', '#junkPremium', '#silverWeight', '#silverPurity', '#purchasePrice', '#pureOunces']
+    .forEach((selector) => document.querySelector(selector)?.addEventListener('input', calculateAll));
+  document.querySelector('#silverUnit')?.addEventListener('change', calculateAll);
   document.querySelector('#junkCalculate')?.addEventListener('click', calculateJunkSilver);
   document.querySelector('#silverCalculate')?.addEventListener('click', calculateSilverValue);
   document.querySelector('#breakevenCalculate')?.addEventListener('click', calculateBreakEven);
@@ -164,7 +187,7 @@ function setupMenu() {
     const open = els.navLinks.classList.toggle('open');
     els.menuButton.setAttribute('aria-expanded', open ? 'true' : 'false');
   });
-  els.navLinks?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+  els.navLinks?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
     els.navLinks.classList.remove('open');
     els.menuButton?.setAttribute('aria-expanded', 'false');
   }));

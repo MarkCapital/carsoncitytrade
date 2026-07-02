@@ -1,0 +1,12 @@
+{
+  "updatedAt": "2026-07-02T14:14:11+00:00",
+  "spot": {
+    "silver": 61.714,
+    "gold": 4130.371,
+    "source": "Swissquote XAG/USD + XAU/USD"
+  },
+  "notes": [
+    "Spot prices are refreshed automatically by GitHub Actions every 10 minutes.",
+    "The browser reads this generated snapshot instead of calling metals APIs directly."
+  ]
+}
