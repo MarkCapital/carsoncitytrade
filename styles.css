@@ -351,41 +351,83 @@ h1 {
 
 .story-section {
   padding: 72px 0;
-  background-color: #332315;
-  background:
-    linear-gradient(90deg, rgba(20,16,12,.02) 0%, rgba(20,16,12,.008) 40%, rgba(20,16,12,0) 100%),
-    linear-gradient(180deg, rgba(20,16,12,.004) 0%, rgba(20,16,12,.03) 100%),
-    url('./assets/carson-city-mint-reference-crop.jpg?v=20260706h') center 8% / 1180px auto no-repeat;
-  color: #fff8e9;
+  background: linear-gradient(180deg, #3a2818 0%, #2c1f14 100%);
 }
 
-.story-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 24px; align-items: stretch; }
+.story-grid {
+  display: grid;
+  grid-template-columns: 1.18fr .9fr;
+  gap: 26px;
+  align-items: stretch;
+}
+
+.story-image {
+  min-height: 560px;
+  border-radius: 22px;
+  overflow: hidden;
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(12,10,8,.08) 0%, rgba(12,10,8,.18) 100%),
+    url('./assets/carson-city-mint-reference-crop.jpg?v=20260706i') center 16% / cover no-repeat;
+  box-shadow: 0 28px 70px rgba(0,0,0,.28);
+}
+
+.story-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 22px;
+  pointer-events: none;
+}
+
+.story-image-badge {
+  position: absolute;
+  left: 24px;
+  bottom: 22px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(22,16,12,.68);
+  color: #fff6ea;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.story-content {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
 
 .story-panel, .morgan-card {
-  border-color: rgba(255,248,235,.18);
-  box-shadow: 0 24px 60px rgba(0,0,0,.25);
-  padding: 32px;
+  padding: 34px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 22px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.22);
 }
+
 .story-panel {
-  background:
-    linear-gradient(rgba(18,14,10,.16), rgba(18,14,10,.16)),
-    url('./assets/carson-city-mint-reference-crop.jpg?v=20260706h') center 10% / contain no-repeat,
-    rgba(22,16,12,.04);
-  backdrop-filter: blur(2px) saturate(1.08);
+  background: rgba(243,234,219,.98);
+  color: var(--ink);
 }
+
 .story-panel h2 {
   font-family: Fraunces, Georgia, serif;
-  font-size: clamp(34px, 4vw, 55px);
-  color: #fffdf7;
-  text-shadow: 0 4px 18px rgba(0,0,0,.82);
+  font-size: clamp(38px, 4vw, 58px);
+  line-height: .96;
+  letter-spacing: -.03em;
+  color: #2c241d;
 }
+
 .story-panel p {
-  color: #fff6ea;
+  color: var(--ink-soft);
   font-size: 18px;
-  text-shadow: 0 2px 12px rgba(0,0,0,.82);
 }
+
 .morgan-card {
-  background: rgba(255,248,235,.84);
+  background: rgba(255,248,235,.92);
   color: var(--ink);
   display: flex;
   flex-direction: column;
@@ -472,6 +514,7 @@ input, select, textarea {
   .price-grid, .service-grid, .calculator-layout { grid-template-columns: 1fr; }
   .market-status { white-space: normal; }
   .feature-window { max-width: 620px; }
+  .story-image { min-height: 420px; }
 }
 
 @media (max-width: 640px) {
@@ -483,6 +526,9 @@ input, select, textarea {
   .hero-actions .button { width: 100%; }
   .coin-illustration { min-height: 260px; }
   .morgan-window { min-height: 260px; }
+  .story-panel, .morgan-card { padding: 26px; }
+  .story-image { min-height: 300px; }
+  .story-image-badge { left: 16px; bottom: 16px; font-size: 12px; }
   .coin-gold { width: 120px; height: 120px; left: 20px; top: 46px; }
   .coin-silver { width: 145px; height: 145px; right: 18px; top: 80px; }
   .coin-bronze { width: 105px; height: 105px; left: 110px; bottom: 28px; }
