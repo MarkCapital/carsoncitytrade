@@ -354,21 +354,25 @@ h1 {
   background: linear-gradient(180deg, #3a2818 0%, #2c1f14 100%);
 }
 
+.story-section .wrap {
+  width: min(1320px, calc(100% - 24px));
+}
+
 .story-grid {
   display: grid;
-  grid-template-columns: 1.18fr .9fr;
-  gap: 26px;
+  grid-template-columns: 1.42fr .78fr;
+  gap: 22px;
   align-items: stretch;
 }
 
 .story-image {
-  min-height: 560px;
+  min-height: 520px;
   border-radius: 22px;
   overflow: hidden;
   position: relative;
   background:
     linear-gradient(180deg, rgba(12,10,8,.08) 0%, rgba(12,10,8,.18) 100%),
-    url('./assets/carson-city-mint-reference-crop.jpg?v=20260706i') center 16% / cover no-repeat;
+    url('./assets/carson-city-mint-bg-alt.jpg?v=20260706j') center 14% / cover no-repeat;
   box-shadow: 0 28px 70px rgba(0,0,0,.28);
 }
 
