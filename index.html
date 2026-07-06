@@ -100,7 +100,7 @@
         <div class="section-heading split-heading">
           <div>
             <p class="eyebrow">Live metals board</p>
-            <h2 id="market-title">Gold & silver spot prices with collector-ready silver math.</h2>
+            <h2 id="market-title">Live gold & silver spot prices.</h2>
           </div>
           <div class="market-status" id="marketStatus">Checking live pricing…</div>
         </div>
@@ -131,18 +131,18 @@
         </div>
         <div class="market-meta">
           <div class="market-meta-card">
-            <span class="market-meta-label">Source</span>
+            <span class="market-meta-label">Market feed</span>
             <strong id="marketSource">Checking snapshot source…</strong>
             <small id="lastUpdated">Checking the latest market update</small>
           </div>
           <div class="market-meta-card compact">
-            <span class="market-meta-label">Refresh cadence</span>
-            <strong>10 min</strong>
-            <small>GitHub Actions updates the local price snapshot automatically.</small>
+            <span class="market-meta-label">What you can use it for</span>
+            <strong>Quick melt checks</strong>
+            <small>Use the live silver spot above with the calculators below for fast estimates.</small>
           </div>
-          <button class="market-refresh-button" type="button" id="refreshPrices">Refresh prices now</button>
+          <button class="market-refresh-button" type="button" id="refreshPrices">Refresh prices</button>
         </div>
-        <p class="fine-print">These calculators stay locked to the same silver spot price shown above so bullion math and junk silver estimates stay aligned.</p>
+        <p class="fine-print">The calculators below use the same live silver price shown here, so your junk silver and melt-value estimates stay in sync.</p>
       </div>
     </section>
 
@@ -172,9 +172,9 @@
       <div class="section-heading split-heading">
         <div>
           <p class="eyebrow">Collector tools</p>
-          <h2 id="calculator-title">Silver calculators built for junk silver and melt-value checks.</h2>
+          <h2 id="calculator-title">Silver calculators for quick value checks.</h2>
         </div>
-        <p class="section-summary">Use these for fast, practical silver math. Each result updates from the live silver spot above, and every output is designed to be useful for real buy/sell conversations.</p>
+        <p class="section-summary">Use these tools to estimate junk silver, rounds, bars, sterling, and scrap silver using the live silver spot above.</p>
       </div>
 
       <div class="calculator-layout">
@@ -183,12 +183,12 @@
             <span>90%</span>
             <div>
               <h3>Junk silver calculator</h3>
-              <p>Estimate melt for circulated 90% U.S. silver by face value or by coin counts.</p>
+              <p>Estimate the silver value of circulated 90% U.S. coins by face value or coin count.</p>
             </div>
           </div>
           <div class="segmented-control" role="tablist" aria-label="Junk silver input mode">
             <button class="segment-button active" type="button" data-junk-mode="face">Face value</button>
-            <button class="segment-button" type="button" data-junk-mode="coins">Specific coins</button>
+            <button class="segment-button" type="button" data-junk-mode="coins">Coin counts</button>
           </div>
           <div id="junkFaceMode">
             <label for="junkFace">Face value of circulated 90% silver</label>
@@ -211,14 +211,14 @@
               <input id="junkDollars" type="number" min="0" step="1" value="0" />
             </label>
           </div>
-          <label for="junkPremium">Optional premium over melt</label>
+          <label for="junkPremium">Add a premium (optional)</label>
           <div class="input-row">
             <input id="junkPremium" type="number" step="0.5" value="0" />
             <span>%</span>
           </div>
           <button class="button primary full" type="button" id="junkCalculate">Calculate junk silver</button>
-          <div class="result-box premium-result" id="junkResult">Enter face value or coin counts to estimate melt.</div>
-          <p class="formula">Uses 0.715 troy oz per $1 face for circulated 90% silver, plus Morgan/Peace dollar silver content when counted individually.</p>
+          <div class="result-box premium-result" id="junkResult">Enter a face value or coin counts to see an estimate.</div>
+          <p class="formula">Standard circulated 90% silver assumptions are used for dimes, quarters, halves, and Morgan or Peace dollars.</p>
         </article>
 
         <article class="calculator-card" data-calculator="silver-value">
@@ -226,7 +226,7 @@
             <span>Ag</span>
             <div>
               <h3>Silver value calculator</h3>
-              <p>Estimate melt value by weight, purity, and quantity for silver rounds, bars, flatware, and scrap.</p>
+              <p>Estimate silver value by weight, purity, and quantity for rounds, bars, sterling, and scrap.</p>
             </div>
           </div>
           <div class="two-col">
@@ -259,8 +259,8 @@
             <button class="preset-chip" type="button" data-purity="99.9">.999</button>
           </div>
           <button class="button primary full" type="button" id="silverCalculate">Calculate silver value</button>
-          <div class="result-box premium-result" id="silverResult">Enter weight, quantity, and purity to estimate silver value.</div>
-          <p class="formula">Useful for rounds, bars, sterling flatware, scrap silver, and bulk lots.</p>
+          <div class="result-box premium-result" id="silverResult">Enter weight, quantity, and purity to see an estimate.</div>
+          <p class="formula">Useful for silver rounds, bars, jewelry, flatware, and scrap lots.</p>
         </article>
       </div>
     </section>
@@ -342,6 +342,6 @@
       scrollTopLinks.forEach((link) => link.addEventListener('click', scrollHomeTop));
     });
   </script>
-  <script src="./app.js?v=20260706c"></script>
+  <script src="./app.js?v=20260706e"></script>
 </body>
 </html>

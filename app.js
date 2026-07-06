@@ -1,10 +1,10 @@
 const DEFAULT_STATE = {
   gold: 4127.499,
   silver: 61.625,
-  source: 'Live price snapshot temporarily unavailable',
+  source: 'Live market pricing',
   updatedAt: null,
   notes: [],
-  status: 'Checking latest metals snapshot…',
+  status: 'Loading current metals prices…',
 };
 
 const JUNK_SILVER_COINS = {
@@ -53,15 +53,26 @@ function number(value, digits = 2) {
 }
 
 function formatUpdatedAt(value) {
-  if (!value) return 'Awaiting latest snapshot time';
+  if (!value) return 'Latest update time unavailable';
   const updated = new Date(value);
-  if (Number.isNaN(updated.getTime())) return 'Awaiting latest snapshot time';
-  return `Updated ${updated.toLocaleString([], {
+  if (Number.isNaN(updated.getTime())) return 'Latest update time unavailable';
+  return `Last updated ${updated.toLocaleString([], {
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
   })}`;
+}
+
+function cleanSourceLabel(source) {
+  if (!source) return 'Live market pricing';
+  const cleaned = String(source)
+    .split('•')[0]
+    .replace(/snapshot/gi, 'pricing')
+    .replace(/generated/gi, 'updated')
+    .trim();
+  if (/Swissquote/i.test(cleaned)) return 'Swissquote market feed';
+  return cleaned;
 }
 
 function getSilverSpot() {
@@ -85,9 +96,7 @@ function renderPrices() {
   if (els.lastUpdated) els.lastUpdated.textContent = formatUpdatedAt(state.updatedAt);
   if (els.marketStatus) els.marketStatus.textContent = state.status;
   if (els.marketSource) {
-    const source = state.source || 'Snapshot source unavailable';
-    const note = Array.isArray(state.notes) && state.notes.length ? ` • ${state.notes[0]}` : '';
-    els.marketSource.textContent = `${source}${note}`;
+    els.marketSource.textContent = cleanSourceLabel(state.source);
   }
   calculateAll();
 }
@@ -98,9 +107,9 @@ function loadCachedPrices() {
     if (!cached) return false;
     if (!Number.isFinite(Number(cached.silver)) || !Number.isFinite(Number(cached.gold))) return false;
     Object.assign(state, cached, {
-      status: 'Showing recently saved prices',
-      source: cached.source || 'Saved metals snapshot',
-      notes: cached.notes || ['Live feed was unavailable, so a recent saved snapshot is shown.'],
+      status: 'Showing the most recent saved prices',
+      source: cached.source || 'Recent market pricing',
+      notes: cached.notes || ['Refresh again in a moment for the latest market update.'],
     });
     return true;
   } catch {
@@ -109,7 +118,7 @@ function loadCachedPrices() {
 }
 
 async function refreshPrices() {
-  if (els.marketStatus) els.marketStatus.textContent = 'Refreshing latest metals snapshot…';
+  if (els.marketStatus) els.marketStatus.textContent = 'Refreshing prices…';
   try {
     const response = await fetch(`./data/prices.json?v=${Date.now()}`, {
       cache: 'no-store',
@@ -126,9 +135,9 @@ async function refreshPrices() {
       silver,
       gold,
       updatedAt: snapshot.updatedAt || new Date().toISOString(),
-      source: snapshot?.spot?.source || 'Generated metals snapshot',
+      source: snapshot?.spot?.source || 'Live market pricing',
       notes: Array.isArray(snapshot?.notes) ? snapshot.notes : [],
-      status: 'Live metals snapshot ready',
+      status: 'Prices updated',
     });
     localStorage.setItem('cctp-price-cache', JSON.stringify({
       gold: state.gold,
@@ -140,7 +149,7 @@ async function refreshPrices() {
   } catch (error) {
     if (!loadCachedPrices()) {
       Object.assign(state, DEFAULT_STATE, {
-        status: 'Live prices are temporarily unavailable',
+        status: 'Live prices are unavailable right now',
         notes: ['Please try the refresh button again in a moment.'],
       });
     }
@@ -175,7 +184,7 @@ function getCoinCounts() {
 }
 
 function renderJunkResult({ melt, total, premium, pureOunces, faceValue, breakdown, entryLabel }) {
-  const premiumLabel = premium > 0 ? `includes ${number(premium, 1)}% premium` : 'melt only';
+  const premiumLabel = premium > 0 ? `${number(premium, 1)}% premium added` : 'No premium added';
   const breakdownHtml = breakdown.length
     ? `<div class="result-subgrid">${breakdown.map((item) => `<span>${item}</span>`).join('')}</div>`
     : '';
@@ -187,7 +196,7 @@ function renderJunkResult({ melt, total, premium, pureOunces, faceValue, breakdo
       <span>Melt value: ${money(melt)}</span>
       <span>Pure silver: ${number(pureOunces, 4)} troy oz</span>
       <span>Face value: ${money(faceValue)}</span>
-      <span>Spot basis: ${money(getSilverSpot())}/oz</span>
+      <span>Silver spot used: ${money(getSilverSpot())}/oz</span>
     </div>
     ${breakdownHtml}
   `;
@@ -216,8 +225,8 @@ function calculateJunkSilver() {
       premium,
       pureOunces,
       faceValue: face,
-      breakdown: [`${money(spot * 0.715)} per $1 face`],
-      entryLabel: `${money(face)} face entered`,
+      breakdown: [`${money(spot * 0.715)} per $1 face value`],
+      entryLabel: `${money(face)} face value`,
     });
     return;
   }
@@ -240,7 +249,7 @@ function calculateJunkSilver() {
   const faceValue = entries.reduce((sum, entry) => sum + entry.qty * entry.face, 0);
   const melt = pureOunces * spot;
   const total = melt * (1 + premium / 100);
-  const breakdown = entries.map((entry) => `${entry.qty} ${entry.label} = ${number(entry.qty * entry.silverOzt, 4)} ozt`);
+  const breakdown = entries.map((entry) => `${entry.qty} ${entry.label} • ${number(entry.qty * entry.silverOzt, 4)} troy oz silver`);
 
   renderJunkResult({
     melt,
@@ -249,7 +258,7 @@ function calculateJunkSilver() {
     pureOunces,
     faceValue,
     breakdown,
-    entryLabel: `${entries.length} coin type${entries.length === 1 ? '' : 's'} entered`,
+    entryLabel: 'Coin count estimate',
   });
 }
 
@@ -283,7 +292,7 @@ function calculateSilverValue() {
       <span>Per item: ${money(perItemValue)}</span>
       <span>Total pure silver: ${number(pureOunces, 4)} troy oz</span>
       <span>Total gross weight: ${number(totalTroy, 4)} troy oz</span>
-      <span>Spot basis: ${money(spot)}/oz</span>
+      <span>Silver spot used: ${money(spot)}/oz</span>
     </div>
   `;
 }
