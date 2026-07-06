@@ -355,24 +355,24 @@ h1 {
 }
 
 .story-section .wrap {
-  width: min(1320px, calc(100% - 24px));
+  width: min(1400px, calc(100% - 20px));
 }
 
 .story-grid {
   display: grid;
-  grid-template-columns: 1.42fr .78fr;
-  gap: 22px;
+  grid-template-columns: 1.62fr .68fr;
+  gap: 18px;
   align-items: stretch;
 }
 
 .story-image {
-  min-height: 520px;
+  min-height: 560px;
   border-radius: 22px;
   overflow: hidden;
   position: relative;
   background:
     linear-gradient(180deg, rgba(12,10,8,.08) 0%, rgba(12,10,8,.18) 100%),
-    url('./assets/carson-city-mint-bg-alt.jpg?v=20260706j') center 14% / cover no-repeat;
+    url('./assets/carson-city-mint-front-wide.jpg?v=20260706k') center 10% / cover no-repeat;
   box-shadow: 0 28px 70px rgba(0,0,0,.28);
 }
 
