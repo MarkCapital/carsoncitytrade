@@ -239,14 +239,17 @@
         <div>
           <p class="eyebrow">Request to be contacted</p>
           <h2 id="contact-title">Looking for rare coins, an appraisal, or gold & silver guidance?</h2>
-          <p>Use this form to ask about coins for sale, request an appraisal appointment, ask about physical gold and silver, or send a follow-up question. When you submit it, an email draft will open already addressed to Carson City Trading Post.</p>
+          <p>Use this form to ask about coins for sale, request an appraisal appointment, ask about physical gold and silver coins, or send a follow-up question. When you submit it, your request will be sent directly to Carson City Trading Post.</p>
           <ul class="contact-list">
             <li>Phone: <a href="tel:3367802826">336-780-2826</a></li>
             <li>Email: <a href="mailto:carsoncity1889@gmail.com">carsoncity1889@gmail.com</a></li>
             <li>Based in Mount Airy, NC</li>
           </ul>
         </div>
-        <form class="contact-form" id="contactForm">
+        <form class="contact-form" id="contactForm" action="https://formsubmit.co/carsoncity1889@gmail.com" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="_subject" value="Carson City Trading Post website inquiry" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_template" value="table" />
           <label>Name
             <input name="name" required placeholder="Your name" />
           </label>
@@ -261,9 +264,8 @@
           <label>What can he help with?
             <select name="reason">
               <option>Appraisal request</option>
-              <option>I am interested in rare coins for sale</option>
-              <option>I want to buy rare coins</option>
-              <option>I am interested in investing in gold or silver</option>
+              <option>i am interested in rare coins for sale</option>
+              <option>I am interested in investing in gold or silver coins</option>
               <option>Question about Morgan silver dollars</option>
               <option>Other</option>
             </select>
@@ -271,8 +273,11 @@
           <label>Message
             <textarea name="message" rows="5" placeholder="Tell us a little about the coins, collection, or appraisal need..."></textarea>
           </label>
-          <button class="button primary full" type="submit">Open email request</button>
-          <p class="form-note" id="formNote">This opens an email draft addressed to Carson City Trading Post.</p>
+          <label>Photos or files (optional)
+            <input name="attachment" type="file" accept=".jpg,.jpeg,.png,.webp,.heic,.pdf" multiple />
+          </label>
+          <button class="button primary full" type="submit">Send request</button>
+          <p class="form-note" id="formNote">This sends your request directly to carsoncity1889@gmail.com. You can also attach coin photos or files.</p>
         </form>
       </div>
     </section>

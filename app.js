@@ -161,24 +161,38 @@ function setupCalculators() {
 function setupContactForm() {
   const form = document.querySelector('#contactForm');
   const note = document.querySelector('#formNote');
-  form?.addEventListener('submit', (event) => {
+  const submitButton = form?.querySelector('button[type="submit"]');
+  form?.addEventListener('submit', async (event) => {
     event.preventDefault();
-    const data = Object.fromEntries(new FormData(form).entries());
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
     const subjectReason = data.reason ? ` — ${data.reason}` : '';
-    const subject = `Website inquiry${subjectReason}`;
-    const lines = [
-      `Name: ${data.name || ''}`,
-      `Email: ${data.email || ''}`,
-      `Phone: ${data.phone || ''}`,
-      `Reason: ${data.reason || ''}`,
-      '',
-      data.message || '',
-    ];
-    const body = lines.join('\n');
-    const href = `mailto:carsoncity1889@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = href;
-    note.textContent = 'An email draft should open addressed to Carson City Trade.';
-    note.classList.add('success');
+    formData.set('_subject', `Carson City Trading Post website inquiry${subjectReason}`);
+    submitButton?.setAttribute('disabled', 'disabled');
+    if (note) {
+      note.textContent = 'Sending your request…';
+      note.classList.remove('success');
+    }
+    try {
+      const response = await fetch('https://formsubmit.co/ajax/carsoncity1889@gmail.com', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: formData,
+      });
+      if (!response.ok) throw new Error('request failed');
+      if (note) {
+        note.textContent = 'Thanks — your request was sent directly to Carson City Trading Post.';
+        note.classList.add('success');
+      }
+      form.reset();
+    } catch (error) {
+      if (note) {
+        note.textContent = 'There was a problem sending your request. Please email carsoncity1889@gmail.com directly.';
+        note.classList.remove('success');
+      }
+    } finally {
+      submitButton?.removeAttribute('disabled');
+    }
   });
 }
 
