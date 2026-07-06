@@ -504,6 +504,63 @@ body {
   color: var(--copper-dark);
 }
 .nav-cta, .button, .trust-row span, input, select, textarea, .input-row, .result-box, .service-icon, .price-card, .calculator-card, .contact-form, .morgan-card, .story-panel, .service-card { border-radius: 4px; }
+.page-shell {
+  min-height: calc(100vh - 148px);
+  display: flex;
+  align-items: center;
+}
+.coming-soon-grid {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 24px;
+  align-items: stretch;
+  padding: 64px 0;
+}
+.coming-soon-card {
+  background: #fff8e8;
+  border: 3px double rgba(95,47,23,.4);
+  box-shadow: var(--shadow);
+  padding: 30px;
+}
+.coming-soon-copy h1 {
+  max-width: 12ch;
+}
+.coming-soon-copy .lead {
+  max-width: 560px;
+}
+.coming-soon-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 28px;
+}
+.coming-soon-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 10px 14px;
+  background: rgba(155,85,43,.12);
+  color: var(--copper-dark);
+  font-size: 14px;
+  font-weight: 900;
+}
+.coming-soon-panel {
+  background: #2b2117;
+  color: #fff8e9;
+}
+.coming-soon-panel h2 {
+  font-family: Fraunces, Georgia, serif;
+  font-size: clamp(28px, 3vw, 40px);
+  margin-bottom: 14px;
+}
+.coming-soon-panel p,
+.coming-soon-panel li { color: #f2e6cc; }
+.coming-soon-list {
+  margin: 18px 0 0;
+  padding-left: 20px;
+}
+.coming-soon-list li + li { margin-top: 10px; }
 .hero {
   background:
     linear-gradient(rgba(255,248,232,.84), rgba(255,248,232,.92)),
@@ -582,6 +639,11 @@ h1 { font-size: clamp(46px, 6.4vw, 82px); }
 @media (max-width: 640px) {
   .coin-photo-window { min-height: 270px; }
   .coin-photo-window img { width: min(82%, 285px); }
+  .coming-soon-actions .button { width: 100%; }
+}
+
+@media (max-width: 980px) {
+  .coming-soon-grid { grid-template-columns: 1fr; }
 }
 
 .primary-services .investment-card {
