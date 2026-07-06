@@ -352,25 +352,27 @@ h1 {
 .story-section {
   padding: 72px 0;
   background:
-    linear-gradient(90deg, rgba(20,16,12,.62) 0%, rgba(20,16,12,.44) 42%, rgba(20,16,12,.36) 100%),
-    linear-gradient(180deg, rgba(20,16,12,.18) 0%, rgba(20,16,12,.58) 100%),
-    url('./assets/carson-city-mint-bg.jpg') center 34% / cover no-repeat;
+    linear-gradient(90deg, rgba(20,16,12,.26) 0%, rgba(20,16,12,.14) 42%, rgba(20,16,12,.08) 100%),
+    linear-gradient(180deg, rgba(20,16,12,.04) 0%, rgba(20,16,12,.28) 100%),
+    url('./assets/carson-city-mint-bg.jpg') center 22% / cover no-repeat;
   color: #fff8e9;
 }
+
 .story-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 24px; align-items: stretch; }
+
 .story-panel, .morgan-card {
   border-color: rgba(255,248,235,.18);
   box-shadow: 0 24px 60px rgba(0,0,0,.25);
   padding: 32px;
 }
 .story-panel {
-  background: rgba(25,20,14,.68);
+  background: rgba(25,20,14,.58);
   backdrop-filter: blur(2px);
 }
 .story-panel h2 { font-family: Fraunces, Georgia, serif; font-size: clamp(34px, 4vw, 55px); }
 .story-panel p { color: #eadfc8; font-size: 18px; }
 .morgan-card {
-  background: rgba(255,248,235,.92);
+  background: rgba(255,248,235,.88);
   color: var(--ink);
   display: flex;
   flex-direction: column;

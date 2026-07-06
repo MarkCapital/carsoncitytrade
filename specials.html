@@ -74,5 +74,14 @@
       <a href="./index.html">Back to home ↑</a>
     </div>
   </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const brandLink = document.querySelector('.brand');
+      if (!brandLink) return;
+      brandLink.addEventListener('click', () => {
+        brandLink.setAttribute('href', './index.html#top');
+      });
+    });
+  </script>
 </body>
 </html>
