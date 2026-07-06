@@ -36,6 +36,7 @@
           <small>Purveyor of Rare Coins</small>
         </span>
       </a>
+      <button class="menu-button" type="button" aria-label="Toggle menu" aria-expanded="false">Menu</button>
       <nav class="nav-links" aria-label="Main navigation">
         <a href="./index.html#appraisals">Rare Coins</a>
         <a href="./index.html#appraisals">Appraisals</a>
@@ -88,10 +89,19 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const brandLink = document.querySelector('.brand');
-      if (!brandLink) return;
-      brandLink.addEventListener('click', () => {
-        brandLink.setAttribute('href', './index.html#top');
-      });
+      const menuButton = document.querySelector('.menu-button');
+      const navLinks = document.querySelector('.nav-links');
+      if (brandLink) {
+        brandLink.addEventListener('click', () => {
+          brandLink.setAttribute('href', './index.html#top');
+        });
+      }
+      if (menuButton && navLinks) {
+        menuButton.addEventListener('click', () => {
+          const open = navLinks.classList.toggle('open');
+          menuButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+      }
     });
   </script>
 </body>
