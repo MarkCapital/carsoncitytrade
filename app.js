@@ -1,37 +1,62 @@
 const DEFAULT_STATE = {
   gold: 4127.499,
   silver: 61.625,
-  source: 'Live prices are temporarily unavailable. Please check back shortly.',
+  source: 'Live price snapshot temporarily unavailable',
   updatedAt: null,
+  notes: [],
+  status: 'Checking latest metals snapshot…',
 };
 
-const state = { ...DEFAULT_STATE };
+const JUNK_SILVER_COINS = {
+  dimes: { label: 'Dimes', face: 0.10, silverOzt: 0.0715 },
+  quarters: { label: 'Quarters', face: 0.25, silverOzt: 0.17875 },
+  halves: { label: 'Half dollars', face: 0.50, silverOzt: 0.3575 },
+  dollars: { label: 'Morgan / Peace dollars', face: 1.0, silverOzt: 0.77344 },
+};
+
+const state = {
+  ...DEFAULT_STATE,
+  junkMode: 'face',
+};
 
 const els = {
   goldPrice: document.querySelector('#goldPrice'),
   silverPrice: document.querySelector('#silverPrice'),
   goldSilverRatio: document.querySelector('#goldSilverRatio'),
+  junkFaceSpot: document.querySelector('#junkFaceSpot'),
   marketStatus: document.querySelector('#marketStatus'),
+  marketSource: document.querySelector('#marketSource'),
   lastUpdated: document.querySelector('#lastUpdated'),
   refreshPrices: document.querySelector('#refreshPrices'),
   menuButton: document.querySelector('.menu-button'),
   navLinks: document.querySelector('.nav-links'),
+  junkResult: document.querySelector('#junkResult'),
+  silverResult: document.querySelector('#silverResult'),
+  junkFaceMode: document.querySelector('#junkFaceMode'),
+  junkCoinsMode: document.querySelector('#junkCoinsMode'),
 };
 
-function money(value) {
+function money(value, digits = 2) {
   return Number(value || 0).toLocaleString(undefined, {
     style: 'currency',
     currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
+}
+
+function number(value, digits = 2) {
+  return Number(value || 0).toLocaleString(undefined, {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
   });
 }
 
 function formatUpdatedAt(value) {
-  if (!value) return 'Latest market update coming in';
+  if (!value) return 'Awaiting latest snapshot time';
   const updated = new Date(value);
-  if (Number.isNaN(updated.getTime())) return 'Latest market update coming in';
-  return `Last updated ${updated.toLocaleString([], {
+  if (Number.isNaN(updated.getTime())) return 'Awaiting latest snapshot time';
+  return `Updated ${updated.toLocaleString([], {
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
@@ -39,13 +64,31 @@ function formatUpdatedAt(value) {
   })}`;
 }
 
+function getSilverSpot() {
+  return Number(state.silver || 0);
+}
+
+function getValue(selector) {
+  return Number(document.querySelector(selector)?.value || 0);
+}
+
 function renderPrices() {
-  els.goldPrice.textContent = money(state.gold);
-  els.silverPrice.textContent = money(state.silver);
-  const ratio = Number(state.gold) > 0 && Number(state.silver) > 0 ? Number(state.gold) / Number(state.silver) : 0;
-  if (els.goldSilverRatio) els.goldSilverRatio.textContent = ratio ? `${ratio.toFixed(1)}:1` : '—';
+  const gold = Number(state.gold || 0);
+  const silver = Number(state.silver || 0);
+  const ratio = gold > 0 && silver > 0 ? gold / silver : 0;
+  const junkFaceMelt = silver > 0 ? silver * 0.715 : 0;
+
+  if (els.goldPrice) els.goldPrice.textContent = money(gold);
+  if (els.silverPrice) els.silverPrice.textContent = money(silver);
+  if (els.goldSilverRatio) els.goldSilverRatio.textContent = ratio ? `${number(ratio, 1)}:1` : '—';
+  if (els.junkFaceSpot) els.junkFaceSpot.textContent = junkFaceMelt ? money(junkFaceMelt) : '—';
   if (els.lastUpdated) els.lastUpdated.textContent = formatUpdatedAt(state.updatedAt);
-  if (els.marketStatus) els.marketStatus.textContent = state.source;
+  if (els.marketStatus) els.marketStatus.textContent = state.status;
+  if (els.marketSource) {
+    const source = state.source || 'Snapshot source unavailable';
+    const note = Array.isArray(state.notes) && state.notes.length ? ` • ${state.notes[0]}` : '';
+    els.marketSource.textContent = `${source}${note}`;
+  }
   calculateAll();
 }
 
@@ -55,7 +98,9 @@ function loadCachedPrices() {
     if (!cached) return false;
     if (!Number.isFinite(Number(cached.silver)) || !Number.isFinite(Number(cached.gold))) return false;
     Object.assign(state, cached, {
-      source: `${cached.source || 'Recent market pricing'} — showing recently saved prices`,
+      status: 'Showing recently saved prices',
+      source: cached.source || 'Saved metals snapshot',
+      notes: cached.notes || ['Live feed was unavailable, so a recent saved snapshot is shown.'],
     });
     return true;
   } catch {
@@ -64,7 +109,7 @@ function loadCachedPrices() {
 }
 
 async function refreshPrices() {
-  if (els.marketStatus) els.marketStatus.textContent = 'Refreshing market pricing…';
+  if (els.marketStatus) els.marketStatus.textContent = 'Refreshing latest metals snapshot…';
   try {
     const response = await fetch(`./data/prices.json?v=${Date.now()}`, {
       cache: 'no-store',
@@ -81,32 +126,26 @@ async function refreshPrices() {
       silver,
       gold,
       updatedAt: snapshot.updatedAt || new Date().toISOString(),
-      source: 'Live market pricing updated automatically',
+      source: snapshot?.spot?.source || 'Generated metals snapshot',
+      notes: Array.isArray(snapshot?.notes) ? snapshot.notes : [],
+      status: 'Live metals snapshot ready',
     });
-    localStorage.setItem('cctp-price-cache', JSON.stringify(state));
+    localStorage.setItem('cctp-price-cache', JSON.stringify({
+      gold: state.gold,
+      silver: state.silver,
+      updatedAt: state.updatedAt,
+      source: state.source,
+      notes: state.notes,
+    }));
   } catch (error) {
     if (!loadCachedPrices()) {
       Object.assign(state, DEFAULT_STATE, {
-        source: 'Live prices are temporarily unavailable. Please check back shortly.',
+        status: 'Live prices are temporarily unavailable',
+        notes: ['Please try the refresh button again in a moment.'],
       });
     }
   }
   renderPrices();
-}
-
-function getSilverSpot() { return Number(state.silver || 0); }
-function getValue(selector) { return Number(document.querySelector(selector)?.value || 0); }
-
-function calculateJunkSilver() {
-  const face = getValue('#junkFace');
-  const premium = getValue('#junkPremium');
-  const melt = face * 0.715 * getSilverSpot();
-  const withPremium = melt * (1 + premium / 100);
-  const multiple = face > 0 ? withPremium / face : 0;
-  document.querySelector('#junkResult').innerHTML = `
-    <strong>${money(withPremium)}</strong><br>
-    Melt: ${money(melt)} • ${multiple.toFixed(2)}× face value
-  `;
 }
 
 function convertToTroyOunces(weight, unit) {
@@ -115,47 +154,179 @@ function convertToTroyOunces(weight, unit) {
   return weight;
 }
 
-function calculateSilverValue() {
-  const weight = getValue('#silverWeight');
-  const purity = getValue('#silverPurity') / 100;
-  const unit = document.querySelector('#silverUnit')?.value || 'toz';
-  const troy = convertToTroyOunces(weight, unit);
-  const pureOunces = troy * purity;
-  const value = pureOunces * getSilverSpot();
-  document.querySelector('#silverResult').innerHTML = `
-    <strong>${money(value)}</strong><br>
-    ${pureOunces.toFixed(4)} pure troy oz silver at ${money(getSilverSpot())}/oz
+function setJunkMode(mode) {
+  state.junkMode = mode === 'coins' ? 'coins' : 'face';
+  document.querySelectorAll('[data-junk-mode]').forEach((button) => {
+    button.classList.toggle('active', button.dataset.junkMode === state.junkMode);
+    button.setAttribute('aria-pressed', button.dataset.junkMode === state.junkMode ? 'true' : 'false');
+  });
+  els.junkFaceMode?.classList.toggle('hidden', state.junkMode !== 'face');
+  els.junkCoinsMode?.classList.toggle('hidden', state.junkMode !== 'coins');
+  calculateJunkSilver();
+}
+
+function getCoinCounts() {
+  return {
+    dimes: getValue('#junkDimes'),
+    quarters: getValue('#junkQuarters'),
+    halves: getValue('#junkHalves'),
+    dollars: getValue('#junkDollars'),
+  };
+}
+
+function renderJunkResult({ melt, total, premium, pureOunces, faceValue, breakdown, entryLabel }) {
+  const premiumLabel = premium > 0 ? `includes ${number(premium, 1)}% premium` : 'melt only';
+  const breakdownHtml = breakdown.length
+    ? `<div class="result-subgrid">${breakdown.map((item) => `<span>${item}</span>`).join('')}</div>`
+    : '';
+
+  els.junkResult.innerHTML = `
+    <strong>${money(total)}</strong>
+    <span class="result-kicker">${entryLabel} • ${premiumLabel}</span>
+    <div class="result-subgrid">
+      <span>Melt value: ${money(melt)}</span>
+      <span>Pure silver: ${number(pureOunces, 4)} troy oz</span>
+      <span>Face value: ${money(faceValue)}</span>
+      <span>Spot basis: ${money(getSilverSpot())}/oz</span>
+    </div>
+    ${breakdownHtml}
   `;
 }
 
-function calculateBreakEven() {
-  const cost = getValue('#purchasePrice');
-  const ounces = getValue('#pureOunces');
-  const neededSpot = ounces > 0 ? cost / ounces : 0;
-  const currentSpot = getSilverSpot();
-  const difference = neededSpot - currentSpot;
-  const status = difference <= 0
-    ? `${money(Math.abs(difference))}/oz above break-even right now`
-    : `${money(difference)}/oz more needed to break even`;
-  document.querySelector('#breakevenResult').innerHTML = `
-    <strong>${money(neededSpot)}/oz break-even</strong><br>
-    Current silver spot: ${money(currentSpot)} • ${status}
+function calculateJunkSilver() {
+  const premium = getValue('#junkPremium');
+  const spot = getSilverSpot();
+  if (spot <= 0) {
+    els.junkResult.innerHTML = 'Silver spot is unavailable. Refresh the metals board to calculate junk silver.';
+    return;
+  }
+
+  if (state.junkMode === 'face') {
+    const face = getValue('#junkFace');
+    if (face <= 0) {
+      els.junkResult.innerHTML = 'Enter a face value to estimate 90% silver melt.';
+      return;
+    }
+    const pureOunces = face * 0.715;
+    const melt = pureOunces * spot;
+    const total = melt * (1 + premium / 100);
+    renderJunkResult({
+      melt,
+      total,
+      premium,
+      pureOunces,
+      faceValue: face,
+      breakdown: [`${money(spot * 0.715)} per $1 face`],
+      entryLabel: `${money(face)} face entered`,
+    });
+    return;
+  }
+
+  const counts = getCoinCounts();
+  const entries = Object.entries(counts)
+    .filter(([, qty]) => qty > 0)
+    .map(([key, qty]) => ({
+      key,
+      qty,
+      ...JUNK_SILVER_COINS[key],
+    }));
+
+  if (!entries.length) {
+    els.junkResult.innerHTML = 'Enter coin counts to estimate mixed junk silver melt.';
+    return;
+  }
+
+  const pureOunces = entries.reduce((sum, entry) => sum + entry.qty * entry.silverOzt, 0);
+  const faceValue = entries.reduce((sum, entry) => sum + entry.qty * entry.face, 0);
+  const melt = pureOunces * spot;
+  const total = melt * (1 + premium / 100);
+  const breakdown = entries.map((entry) => `${entry.qty} ${entry.label} = ${number(entry.qty * entry.silverOzt, 4)} ozt`);
+
+  renderJunkResult({
+    melt,
+    total,
+    premium,
+    pureOunces,
+    faceValue,
+    breakdown,
+    entryLabel: `${entries.length} coin type${entries.length === 1 ? '' : 's'} entered`,
+  });
+}
+
+function calculateSilverValue() {
+  const weight = getValue('#silverWeight');
+  const quantity = Math.max(1, getValue('#silverQuantity') || 1);
+  const purityPercent = getValue('#silverPurity');
+  const purity = purityPercent / 100;
+  const unit = document.querySelector('#silverUnit')?.value || 'toz';
+  const spot = getSilverSpot();
+
+  if (spot <= 0) {
+    els.silverResult.innerHTML = 'Silver spot is unavailable. Refresh the metals board to calculate melt value.';
+    return;
+  }
+  if (weight <= 0 || purity <= 0) {
+    els.silverResult.innerHTML = 'Enter weight and purity to estimate silver value.';
+    return;
+  }
+
+  const perItemTroy = convertToTroyOunces(weight, unit);
+  const totalTroy = perItemTroy * quantity;
+  const pureOunces = totalTroy * purity;
+  const totalValue = pureOunces * spot;
+  const perItemValue = totalValue / quantity;
+
+  els.silverResult.innerHTML = `
+    <strong>${money(totalValue)}</strong>
+    <span class="result-kicker">${quantity} item${quantity === 1 ? '' : 's'} • ${number(purityPercent, 1)}% silver</span>
+    <div class="result-subgrid">
+      <span>Per item: ${money(perItemValue)}</span>
+      <span>Total pure silver: ${number(pureOunces, 4)} troy oz</span>
+      <span>Total gross weight: ${number(totalTroy, 4)} troy oz</span>
+      <span>Spot basis: ${money(spot)}/oz</span>
+    </div>
   `;
 }
 
 function calculateAll() {
   calculateJunkSilver();
   calculateSilverValue();
-  calculateBreakEven();
+}
+
+function setupPurityPresets() {
+  document.querySelectorAll('.preset-chip').forEach((button) => {
+    button.addEventListener('click', () => {
+      const purity = button.dataset.purity;
+      const input = document.querySelector('#silverPurity');
+      if (!input || !purity) return;
+      input.value = purity;
+      document.querySelectorAll('.preset-chip').forEach((chip) => chip.classList.remove('active'));
+      button.classList.add('active');
+      calculateSilverValue();
+    });
+  });
+
+  document.querySelector('#silverPurity')?.addEventListener('input', () => {
+    const purity = String(document.querySelector('#silverPurity')?.value || '');
+    document.querySelectorAll('.preset-chip').forEach((chip) => {
+      chip.classList.toggle('active', chip.dataset.purity === purity);
+    });
+  });
 }
 
 function setupCalculators() {
-  ['#junkFace', '#junkPremium', '#silverWeight', '#silverPurity', '#purchasePrice', '#pureOunces']
+  ['#junkFace', '#junkPremium', '#junkDimes', '#junkQuarters', '#junkHalves', '#junkDollars', '#silverWeight', '#silverPurity', '#silverQuantity']
     .forEach((selector) => document.querySelector(selector)?.addEventListener('input', calculateAll));
-  document.querySelector('#silverUnit')?.addEventListener('change', calculateAll);
+
+  document.querySelector('#silverUnit')?.addEventListener('change', calculateSilverValue);
   document.querySelector('#junkCalculate')?.addEventListener('click', calculateJunkSilver);
   document.querySelector('#silverCalculate')?.addEventListener('click', calculateSilverValue);
-  document.querySelector('#breakevenCalculate')?.addEventListener('click', calculateBreakEven);
+  document.querySelectorAll('[data-junk-mode]').forEach((button) => {
+    button.addEventListener('click', () => setJunkMode(button.dataset.junkMode));
+  });
+
+  setupPurityPresets();
+  setJunkMode('face');
 }
 
 function setupContactForm() {

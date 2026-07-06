@@ -280,6 +280,11 @@ h1 {
 .price-card small { display: block; margin-top: 10px; color: var(--ink-soft); }
 .price-card.ratio strong { font-size: clamp(30px, 2.8vw, 40px); }
 .price-card.utility { padding-right: 24px; }
+.price-card.emphasis {
+  background: linear-gradient(180deg, #fff8e9, #f3e2bc);
+  border: 1px solid rgba(242,211,124,.48);
+}
+.price-card.emphasis strong { color: var(--copper-dark); }
 .price-card.ratio .metal-icon {
   font-size: 13px;
   letter-spacing: .02em;
@@ -304,17 +309,47 @@ h1 {
 }
 .silver .metal-icon { background: #e6e9e4; color: #57615d; }
 .utility strong { color: var(--ink); font-size: 44px; }
-.text-button {
+.market-meta {
+  display: grid;
+  grid-template-columns: 1.25fr .9fr auto;
+  gap: 16px;
+  align-items: stretch;
   margin-top: 18px;
-  border: 0;
-  color: var(--copper-dark);
-  background: transparent;
-  font-weight: 900;
-  padding: 0;
-  text-decoration: underline;
 }
+.market-meta-card {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.14);
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.market-meta-card strong {
+  color: #fff8e9;
+  font-size: 18px;
+}
+.market-meta-card small { color: #e7dcc4; }
+.market-meta-label {
+  color: #dfb252;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.market-refresh-button {
+  border: 1px solid rgba(255,255,255,.2);
+  background: #fff8e8;
+  color: var(--copper-dark);
+  font-weight: 900;
+  padding: 0 22px;
+  border-radius: var(--radius);
+  box-shadow: 0 12px 30px rgba(0,0,0,.18);
+}
+.market-refresh-button:hover { background: #fff1d0; }
 .fine-print { color: #e7dcc4; margin: 20px 0 0; max-width: 860px; }
 
+#market, #story, #calculators, #contact { scroll-margin-top: 110px; }
 .section { padding: 68px 0; }
 .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 28px; }
 .service-card, .calculator-card, .contact-form, .morgan-card, .story-panel {
@@ -441,8 +476,8 @@ h1 {
 .morgan-card a { color: var(--copper-dark); font-weight: 900; text-decoration: none; }
 
 .section-summary { max-width: 430px; color: var(--ink-soft); font-weight: 700; }
-.calculator-layout { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; align-items: start; }
-.calculator-card { padding: 24px; }
+.calculator-layout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; }
+.calculator-card { padding: 28px; }
 .calculator-card.active { border: 2px solid var(--copper); }
 .calculator-header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
 .calculator-header > span {
@@ -470,6 +505,39 @@ input, select, textarea {
 .input-row span { padding: 0 12px; font-weight: 900; color: var(--copper-dark); }
 .input-row input { border: 0; border-radius: 0; }
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.segmented-control {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.segment-button,
+.preset-chip {
+  border: 1px solid rgba(155,85,43,.24);
+  background: #fff9ee;
+  color: var(--ink-soft);
+  padding: 11px 14px;
+  border-radius: 999px;
+  font-weight: 900;
+}
+.segment-button.active,
+.preset-chip.active {
+  background: var(--copper-dark);
+  color: #fff8e9;
+  border-color: var(--copper-dark);
+}
+.coin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
 .result-box {
   background: #f3e5ca;
   color: var(--copper-dark);
@@ -478,7 +546,35 @@ input, select, textarea {
   margin-top: 14px;
   font-weight: 900;
 }
-.formula { font-size: 13px; }
+.premium-result {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.premium-result strong {
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: .98;
+}
+.result-kicker {
+  color: var(--ink-soft);
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.result-subgrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12px;
+}
+.result-subgrid span {
+  background: rgba(255,255,255,.52);
+  border: 1px solid rgba(155,85,43,.12);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+.formula { font-size: 13px; color: var(--ink-soft); }
+.hidden { display: none !important; }
 
 .contact-section { background: linear-gradient(135deg, #fffdf5, #ead9b9); padding: 70px 0; }
 .contact-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 34px; align-items: center; }
@@ -515,7 +611,7 @@ input, select, textarea {
   .nav-cta { text-align: center; }
   .hero-grid, .story-grid, .contact-grid, .split-heading { grid-template-columns: 1fr; display: grid; }
   .hero-grid { min-height: auto; padding-top: 40px; }
-  .price-grid, .service-grid, .calculator-layout { grid-template-columns: 1fr; }
+  .price-grid, .service-grid, .calculator-layout, .market-meta { grid-template-columns: 1fr; }
   .market-status { white-space: normal; }
   .feature-window { max-width: 620px; }
   .story-image { min-height: 420px; }
@@ -530,6 +626,8 @@ input, select, textarea {
   .hero-actions .button { width: 100%; }
   .coin-illustration { min-height: 260px; }
   .morgan-window { min-height: 260px; }
+  .coin-grid, .result-subgrid { grid-template-columns: 1fr; }
+  .segment-button, .preset-chip, .market-refresh-button { width: 100%; }
   .story-panel, .morgan-card { padding: 26px; }
   .story-image { min-height: 300px; }
   .story-image-badge { left: 16px; bottom: 16px; font-size: 12px; }

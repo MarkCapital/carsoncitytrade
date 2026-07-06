@@ -100,7 +100,7 @@
         <div class="section-heading split-heading">
           <div>
             <p class="eyebrow">Live metals board</p>
-            <h2 id="market-title">Gold & silver spot prices</h2>
+            <h2 id="market-title">Gold & silver spot prices with collector-ready silver math.</h2>
           </div>
           <div class="market-status" id="marketStatus">Checking live pricing…</div>
         </div>
@@ -123,14 +123,26 @@
             <strong id="goldSilverRatio">—</strong>
             <small>ounces of silver equal 1 oz gold</small>
           </article>
-          <article class="price-card utility">
-            <p>Refresh schedule</p>
-            <strong>10 min</strong>
-            <small id="lastUpdated">Checking the latest market update</small>
-            <button class="text-button" type="button" id="refreshPrices">Refresh now</button>
+          <article class="price-card utility emphasis">
+            <p>90% silver melt</p>
+            <strong id="junkFaceSpot">—</strong>
+            <small>per $1 face value of circulated U.S. 90% silver</small>
           </article>
         </div>
-        <p class="fine-print">Live prices refresh automatically throughout the day so the spot board and silver calculators stay aligned with current market pricing.</p>
+        <div class="market-meta">
+          <div class="market-meta-card">
+            <span class="market-meta-label">Source</span>
+            <strong id="marketSource">Checking snapshot source…</strong>
+            <small id="lastUpdated">Checking the latest market update</small>
+          </div>
+          <div class="market-meta-card compact">
+            <span class="market-meta-label">Refresh cadence</span>
+            <strong>10 min</strong>
+            <small>GitHub Actions updates the local price snapshot automatically.</small>
+          </div>
+          <button class="market-refresh-button" type="button" id="refreshPrices">Refresh prices now</button>
+        </div>
+        <p class="fine-print">These calculators stay locked to the same silver spot price shown above so bullion math and junk silver estimates stay aligned.</p>
       </div>
     </section>
 
@@ -160,9 +172,9 @@
       <div class="section-heading split-heading">
         <div>
           <p class="eyebrow">Collector tools</p>
-          <h2 id="calculator-title">Silver calculators built around the live spot price.</h2>
+          <h2 id="calculator-title">Silver calculators built for junk silver and melt-value checks.</h2>
         </div>
-        <p class="section-summary">Use these for quick estimates when thinking about silver value or precious-metals purchases. Final values should still be confirmed in person because condition, date, mint mark, premium, and collector demand matter.</p>
+        <p class="section-summary">Use these for fast, practical silver math. Each result updates from the live silver spot above, and every output is designed to be useful for real buy/sell conversations.</p>
       </div>
 
       <div class="calculator-layout">
@@ -171,13 +183,33 @@
             <span>90%</span>
             <div>
               <h3>Junk silver calculator</h3>
-              <p>Estimate melt value for common 90% U.S. silver coins.</p>
+              <p>Estimate melt for circulated 90% U.S. silver by face value or by coin counts.</p>
             </div>
           </div>
-          <label for="junkFace">Face value of 90% silver coins</label>
-          <div class="input-row">
-            <span>$</span>
-            <input id="junkFace" type="number" min="0" step="0.10" value="10" />
+          <div class="segmented-control" role="tablist" aria-label="Junk silver input mode">
+            <button class="segment-button active" type="button" data-junk-mode="face">Face value</button>
+            <button class="segment-button" type="button" data-junk-mode="coins">Specific coins</button>
+          </div>
+          <div id="junkFaceMode">
+            <label for="junkFace">Face value of circulated 90% silver</label>
+            <div class="input-row">
+              <span>$</span>
+              <input id="junkFace" type="number" min="0" step="0.10" value="10" />
+            </div>
+          </div>
+          <div class="coin-grid hidden" id="junkCoinsMode">
+            <label>Pre-1965 dimes
+              <input id="junkDimes" type="number" min="0" step="1" value="0" />
+            </label>
+            <label>Pre-1965 quarters
+              <input id="junkQuarters" type="number" min="0" step="1" value="0" />
+            </label>
+            <label>Pre-1965 half dollars
+              <input id="junkHalves" type="number" min="0" step="1" value="0" />
+            </label>
+            <label>Morgan / Peace dollars
+              <input id="junkDollars" type="number" min="0" step="1" value="0" />
+            </label>
           </div>
           <label for="junkPremium">Optional premium over melt</label>
           <div class="input-row">
@@ -185,8 +217,8 @@
             <span>%</span>
           </div>
           <button class="button primary full" type="button" id="junkCalculate">Calculate junk silver</button>
-          <div class="result-box" id="junkResult">Enter face value to estimate melt.</div>
-          <p class="formula">Uses 0.715 troy oz silver per $1 face value for circulated 90% silver.</p>
+          <div class="result-box premium-result" id="junkResult">Enter face value or coin counts to estimate melt.</div>
+          <p class="formula">Uses 0.715 troy oz per $1 face for circulated 90% silver, plus Morgan/Peace dollar silver content when counted individually.</p>
         </article>
 
         <article class="calculator-card" data-calculator="silver-value">
@@ -194,11 +226,11 @@
             <span>Ag</span>
             <div>
               <h3>Silver value calculator</h3>
-              <p>Estimate silver melt value by weight and purity.</p>
+              <p>Estimate melt value by weight, purity, and quantity for silver rounds, bars, flatware, and scrap.</p>
             </div>
           </div>
           <div class="two-col">
-            <label>Weight
+            <label>Weight per item
               <input id="silverWeight" type="number" min="0" step="0.01" value="1" />
             </label>
             <label>Unit
@@ -209,32 +241,26 @@
               </select>
             </label>
           </div>
-          <label for="silverPurity">Silver purity</label>
+          <div class="two-col">
+            <label>Quantity
+              <input id="silverQuantity" type="number" min="1" step="1" value="1" />
+            </label>
+            <label for="silverPurity">Silver purity</label>
+          </div>
           <div class="input-row">
             <input id="silverPurity" type="number" min="0" max="100" step="0.1" value="90" />
             <span>%</span>
           </div>
+          <div class="preset-row" aria-label="Common silver purity presets">
+            <button class="preset-chip" type="button" data-purity="35">35%</button>
+            <button class="preset-chip" type="button" data-purity="40">40%</button>
+            <button class="preset-chip active" type="button" data-purity="90">90%</button>
+            <button class="preset-chip" type="button" data-purity="92.5">Sterling</button>
+            <button class="preset-chip" type="button" data-purity="99.9">.999</button>
+          </div>
           <button class="button primary full" type="button" id="silverCalculate">Calculate silver value</button>
-          <div class="result-box" id="silverResult">Enter weight and purity to estimate value.</div>
-        </article>
-
-        <article class="calculator-card" data-calculator="breakeven">
-          <div class="calculator-header">
-            <span>BE</span>
-            <div>
-              <h3>Break-even calculator</h3>
-              <p>See what silver spot price you need to break even.</p>
-            </div>
-          </div>
-          <label for="purchasePrice">Total purchase price</label>
-          <div class="input-row">
-            <span>$</span>
-            <input id="purchasePrice" type="number" min="0" step="0.01" value="350" />
-          </div>
-          <label for="pureOunces">Pure silver ounces owned</label>
-          <input id="pureOunces" type="number" min="0" step="0.001" value="10" />
-          <button class="button primary full" type="button" id="breakevenCalculate">Calculate break-even</button>
-          <div class="result-box" id="breakevenResult">Enter cost and ounces to estimate break-even spot.</div>
+          <div class="result-box premium-result" id="silverResult">Enter weight, quantity, and purity to estimate silver value.</div>
+          <p class="formula">Useful for rounds, bars, sterling flatware, scrap silver, and bulk lots.</p>
         </article>
       </div>
     </section>
@@ -316,6 +342,6 @@
       scrollTopLinks.forEach((link) => link.addEventListener('click', scrollHomeTop));
     });
   </script>
-  <script src="./app.js?v=20260706b"></script>
+  <script src="./app.js?v=20260706c"></script>
 </body>
 </html>
