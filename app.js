@@ -354,7 +354,7 @@ function setupContactForm() {
       note.classList.remove('success');
     }
     try {
-      const response = await fetch('https://formsubmit.co/ajax/jstanley@sharpkeeper.com', {
+      const response = await fetch('https://formsubmit.co/ajax/21d37ea7857eedb26aeff4c6472d93ed', {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body: formData,
