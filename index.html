@@ -371,8 +371,9 @@
           <label>Message
             <textarea name="message" rows="5" placeholder="Tell us a little about the coins, collection, or appraisal need..."></textarea>
           </label>
-          <label>Photos or files (optional)
-            <input name="attachment" type="file" accept=".jpg,.jpeg,.png,.webp,.heic,.pdf" multiple />
+          <label>Photo or file (optional)
+            <input name="attachment" type="file" accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf" />
+            <small class="field-help">For best results, upload one JPG, PNG, WEBP, or PDF file. HEIC photos from iPhone are not used here.</small>
           </label>
           <button class="button primary full" type="submit">Send request</button>
           <p class="form-note" id="formNote">This sends your request directly to Carson City Trading Post. You can also attach coin photos or files.</p>

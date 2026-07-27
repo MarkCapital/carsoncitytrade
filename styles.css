@@ -612,6 +612,7 @@ input, select, textarea {
 .contact-list { padding: 0; margin: 24px 0 0; list-style: none; display: grid; gap: 10px; }
 .contact-list li { background: rgba(255,255,255,.6); border-radius: 999px; padding: 10px 14px; font-weight: 900; }
 .contact-form { padding: 26px; }
+.field-help { display: block; margin-top: 8px; color: var(--ink-soft); font-size: 13px; line-height: 1.45; }
 .form-note { color: var(--ink-soft); font-size: 14px !important; margin-bottom: 0; }
 .form-note.success { background: #e3efd8; color: #315322; padding: 12px; border-radius: 14px; font-weight: 900; }
 
