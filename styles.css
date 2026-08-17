@@ -737,14 +737,14 @@ body {
   font-weight: 800;
   color: var(--ink);
 }
+.coming-soon-copy .coming-soon-actions {
+  margin-top: 32px;
+}
 .coming-soon-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
   margin-top: 28px;
-}
-.special-shipping {
-  margin-top: 24px;
 }
 .coming-soon-note {
   display: inline-flex;
@@ -768,6 +768,15 @@ body {
 }
 .coming-soon-panel p,
 .coming-soon-panel li { color: #f2e6cc; }
+.special-offer-panel {
+  background: #f1dfc5;
+}
+.special-offer-panel h2 {
+  font-family: Fraunces, Georgia, serif;
+  font-size: clamp(28px, 3vw, 40px);
+  color: var(--ink);
+  margin-bottom: 18px;
+}
 .special-panel-note {
   margin-top: 26px;
   padding: 18px 20px;
@@ -777,12 +786,15 @@ body {
   font-weight: 900;
   line-height: 1.45;
 }
-.special-panel-actions {
-  margin-top: 24px;
+.special-panel-note-light {
+  margin-top: 0;
 }
-.special-panel-actions .button.secondary {
-  background: #fff8e8;
+.special-panel-copy {
+  margin: 24px 0 0;
   color: var(--ink);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.55;
 }
 .coming-soon-list {
   margin: 18px 0 0;
