@@ -712,6 +712,10 @@ body {
   align-items: stretch;
   padding: 64px 0;
 }
+.single-special-layout {
+  grid-template-columns: minmax(0, 860px);
+  justify-content: center;
+}
 .coming-soon-card {
   background: #fff8e8;
   border: 3px double rgba(95,47,23,.4);
@@ -746,6 +750,9 @@ body {
   gap: 14px;
   margin-top: 28px;
 }
+.special-shipping {
+  margin-top: 24px;
+}
 .coming-soon-note {
   display: inline-flex;
   align-items: center;
@@ -756,6 +763,13 @@ body {
   color: var(--copper-dark);
   font-size: 14px;
   font-weight: 900;
+}
+.special-inline-note {
+  margin: 22px 0 0;
+  color: var(--ink-soft);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.55;
 }
 .coming-soon-panel {
   background: #2b2117;
