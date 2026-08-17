@@ -721,14 +721,30 @@ body {
 .coming-soon-copy h1 {
   max-width: 12ch;
 }
+.special-subtitle {
+  margin: 12px 0 0;
+  color: var(--copper-dark);
+  font-size: 22px;
+  font-weight: 900;
+}
 .coming-soon-copy .lead {
   max-width: 560px;
+}
+.special-list {
+  margin-top: 24px;
+}
+.special-list li {
+  font-weight: 800;
+  color: var(--ink);
 }
 .coming-soon-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
   margin-top: 28px;
+}
+.special-shipping {
+  margin-top: 24px;
 }
 .coming-soon-note {
   display: inline-flex;
@@ -752,6 +768,22 @@ body {
 }
 .coming-soon-panel p,
 .coming-soon-panel li { color: #f2e6cc; }
+.special-panel-note {
+  margin-top: 26px;
+  padding: 18px 20px;
+  background: rgba(255,248,232,.94);
+  color: var(--copper-dark);
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.45;
+}
+.special-panel-actions {
+  margin-top: 24px;
+}
+.special-panel-actions .button.secondary {
+  background: #fff8e8;
+  color: var(--ink);
+}
 .coming-soon-list {
   margin: 18px 0 0;
   padding-left: 20px;
