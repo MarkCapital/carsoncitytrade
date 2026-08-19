@@ -1,0 +1,16 @@
+[Unit]
+Description=Carson City Trading Post contact backend
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/work/carsoncitytradingpost/site/backend
+Environment=HERMES_HOME=/home/ubuntu/.hermes
+ExecStart=/home/ubuntu/.hermes/hermes-agent/venv/bin/python -m uvicorn app:app --host 127.0.0.1 --port 8788
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

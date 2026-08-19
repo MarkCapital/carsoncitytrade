@@ -36,6 +36,39 @@ const els = {
   junkCoinsMode: document.querySelector('#junkCoinsMode'),
 };
 
+const CONTACT_BACKEND_URL = 'https://carson-contact.35.239.230.32.nip.io/submit';
+
+function setHiddenField(form, name, value) {
+  let input = form.querySelector(`input[name="${name}"]`);
+  if (!input) {
+    input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = name;
+    form.appendChild(input);
+  }
+  input.value = value;
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : '';
+      resolve(result.split(',').pop() || '');
+    };
+    reader.onerror = () => reject(reader.error || new Error('File read failed'));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function collectAttachmentPayload(files) {
+  return Promise.all(files.map(async (file) => ({
+    name: file.name,
+    type: file.type || 'application/octet-stream',
+    base64: await fileToBase64(file),
+  })));
+}
+
 function money(value, digits = 2) {
   return Number(value || 0).toLocaleString(undefined, {
     style: 'currency',
@@ -349,41 +382,45 @@ function setupContactForm() {
     note.classList.add('success');
   }
   form?.addEventListener('submit', async (event) => {
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
-    const subjectReason = data.reason ? ` — ${data.reason}` : '';
-    formData.set('_subject', `Carson City Trading Post website inquiry${subjectReason}`);
+    event.preventDefault();
     submitButton?.setAttribute('disabled', 'disabled');
     if (note) {
       note.textContent = 'Sending your request…';
       note.classList.remove('success');
     }
-    const hasAttachments = Array.from(attachmentInput?.files || []).some((file) => file && file.size > 0);
-    if (hasAttachments) {
-      form.querySelector('input[name="_subject"]')?.setAttribute('value', `Carson City Trading Post website inquiry${subjectReason}`);
-      return;
-    }
-    event.preventDefault();
+
     try {
-      const response = await fetch('https://formsubmit.co/ajax/21d37ea7857eedb26aeff4c6472d93ed', {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: formData,
-      });
-      if (!response.ok) throw new Error('request failed');
-      if (note) {
-        note.textContent = 'Thanks — your request was sent directly to Carson City Trading Post.';
-        note.classList.add('success');
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      const files = Array.from(attachmentInput?.files || []).filter((file) => file && file.size > 0);
+      const attachments = await collectAttachmentPayload(files);
+
+      form.action = CONTACT_BACKEND_URL;
+      setHiddenField(form, 'origin', window.location.origin);
+      setHiddenField(form, 'redirect', `${window.location.origin}/?contact=success#contact`);
+      setHiddenField(form, 'attachments_json', JSON.stringify(attachments));
+
+      if (attachmentInput) {
+        attachmentInput.dataset.originalName = attachmentInput.dataset.originalName || attachmentInput.name || 'attachment_file';
+        attachmentInput.name = 'attachment_file_unused';
       }
-      url.searchParams.delete('contact');
-      window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`);
-      form.reset();
+
+      if (!data.name || !String(data.name).trim()) {
+        throw new Error('Name is required.');
+      }
+      if (!data.message || !String(data.message).trim()) {
+        throw new Error('Message is required.');
+      }
+
+      form.submit();
     } catch (error) {
+      if (attachmentInput?.dataset?.originalName) {
+        attachmentInput.name = attachmentInput.dataset.originalName;
+      }
       if (note) {
         note.textContent = 'There was a problem sending your request. Please email carsoncity1889@gmail.com directly.';
         note.classList.remove('success');
       }
-    } finally {
       submitButton?.removeAttribute('disabled');
     }
   });

@@ -342,12 +342,10 @@
             <li>Based in Mount Airy, NC</li>
           </ul>
         </div>
-        <form class="contact-form" id="contactForm" action="https://formsubmit.co/21d37ea7857eedb26aeff4c6472d93ed" method="POST" enctype="multipart/form-data">
-          <input type="hidden" name="_subject" value="Carson City Trading Post website inquiry" />
-          <input type="hidden" name="_cc" value="jstanley@sharpkeeper.com,carsoncity1889@gmail.com" />
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="hidden" name="_next" value="https://carsoncitytradingpost.com/?contact=success#contact" />
-          <input type="hidden" name="_template" value="table" />
+        <form class="contact-form" id="contactForm" action="https://carson-contact.35.239.230.32.nip.io/submit" method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="origin" value="https://carsoncitytradingpost.com" />
+          <input type="hidden" name="redirect" value="https://carsoncitytradingpost.com/?contact=success#contact" />
+          <input type="hidden" name="attachments_json" value="[]" />
           <label>Name
             <input name="name" required placeholder="Your name" />
           </label>
@@ -373,7 +371,7 @@
             <textarea name="message" rows="5" placeholder="Tell us a little about the coin, weekly special, collection, or appraisal need..."></textarea>
           </label>
           <label>Photo or file (optional)
-            <input name="attachment" type="file" accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf" />
+            <input name="attachment_file" type="file" accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf" />
             <small class="field-help">For best results, upload one JPG, PNG, WEBP, or PDF file. HEIC photos from iPhone are not used here.</small>
           </label>
           <button class="button primary full" type="submit">Send request</button>
@@ -411,6 +409,6 @@
       scrollTopLinks.forEach((link) => link.addEventListener('click', scrollHomeTop));
     });
   </script>
-  <script src="./app.js?v=20260819a"></script>
+  <script src="./app.js?v=20260819b"></script>
 </body>
 </html>
