@@ -342,6 +342,7 @@ function setupContactForm() {
   const form = document.querySelector('#contactForm');
   const note = document.querySelector('#formNote');
   const submitButton = form?.querySelector('button[type="submit"]');
+  const attachmentInput = form?.querySelector('input[type="file"]');
   const url = new URL(window.location.href);
   if (note && url.searchParams.get('contact') === 'success') {
     note.textContent = 'Thanks — your request was sent directly to Carson City Trading Post.';
@@ -356,6 +357,11 @@ function setupContactForm() {
     if (note) {
       note.textContent = 'Sending your request…';
       note.classList.remove('success');
+    }
+    const hasAttachments = Array.from(attachmentInput?.files || []).some((file) => file && file.size > 0);
+    if (hasAttachments) {
+      form.querySelector('input[name="_subject"]')?.setAttribute('value', `Carson City Trading Post website inquiry${subjectReason}`);
+      return;
     }
     event.preventDefault();
     try {
