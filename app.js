@@ -342,7 +342,6 @@ function setupContactForm() {
   const form = document.querySelector('#contactForm');
   const note = document.querySelector('#formNote');
   const submitButton = form?.querySelector('button[type="submit"]');
-  const attachmentInput = form?.querySelector('input[type="file"]');
   const url = new URL(window.location.href);
   if (note && url.searchParams.get('contact') === 'success') {
     note.textContent = 'Thanks — your request was sent directly to Carson City Trading Post.';
@@ -358,14 +357,9 @@ function setupContactForm() {
       note.textContent = 'Sending your request…';
       note.classList.remove('success');
     }
-    const hasAttachments = Array.from(attachmentInput?.files || []).some((file) => file && file.size > 0);
-    if (hasAttachments) {
-      form.querySelector('input[name="_subject"]')?.setAttribute('value', `Carson City Trading Post website inquiry${subjectReason}`);
-      return;
-    }
     event.preventDefault();
     try {
-      const response = await fetch('https://formsubmit.co/ajax/jstanley@sharpkeeper.com', {
+      const response = await fetch('https://formsubmit.co/ajax/21d37ea7857eedb26aeff4c6472d93ed', {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body: formData,
