@@ -346,6 +346,11 @@
           <input type="hidden" name="origin" value="https://carsoncitytradingpost.com" />
           <input type="hidden" name="redirect" value="https://carsoncitytradingpost.com/?contact=success#contact" />
           <input type="hidden" name="attachments_json" value="[]" />
+          <div class="contact-trap" aria-hidden="true">
+            <label>Website
+              <input name="website" type="text" tabindex="-1" autocomplete="off" />
+            </label>
+          </div>
           <label>Name
             <input name="name" required placeholder="Your name" />
           </label>
@@ -368,7 +373,7 @@
             </select>
           </label>
           <label>Message
-            <textarea name="message" rows="5" placeholder="Tell us a little about the coin, weekly special, collection, or appraisal need..."></textarea>
+            <textarea name="message" rows="5" required placeholder="Tell us a little about the coin, weekly special, collection, or appraisal need..."></textarea>
           </label>
           <label>Photo or file (optional)
             <input name="attachment_file" type="file" accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf" />
