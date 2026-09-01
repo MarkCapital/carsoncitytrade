@@ -1,8 +1,8 @@
 {
-  "updatedAt": "2026-09-01T15:02:38+00:00",
+  "updatedAt": "2026-09-01T18:25:24+00:00",
   "spot": {
-    "silver": 64.8125,
-    "gold": 4360.089,
+    "silver": 64.534,
+    "gold": 4340.889,
     "source": "Swissquote XAG/USD + XAU/USD"
   },
   "notes": [
