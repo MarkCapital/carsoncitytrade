@@ -43,7 +43,12 @@ EMAIL_PATTERN = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
 RECENT_IP_SUBMISSIONS: dict[str, list[float]] = {}
 RECENT_DUPLICATE_KEYS: dict[str, float] = {}
 HERMES_HOME = Path(os.environ.get('HERMES_HOME', str(Path.home() / '.hermes')))
-GOOGLE_TOKEN = HERMES_HOME / 'google_token.json'
+GOOGLE_TOKEN = Path(
+    os.environ.get(
+        'CARSON_GOOGLE_TOKEN_PATH',
+        str(HERMES_HOME / 'profiles' / 'carson-gmail-backend' / 'google_token.json'),
+    )
+)
 GOOGLE_SCOPES = [
     'https://www.googleapis.com/auth/gmail.send',
     'https://www.googleapis.com/auth/gmail.readonly',
