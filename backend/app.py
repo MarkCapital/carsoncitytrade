@@ -58,11 +58,21 @@ GOOGLE_SCOPES = [
 ]
 
 
+def save_refreshed_credentials(creds, token_path: Path = GOOGLE_TOKEN):
+    """Persist refreshed credentials when the managed token is writable."""
+    try:
+        token_path.write_text(creds.to_json())
+    except PermissionError:
+        # The production token is intentionally root-managed and read-only to
+        # this service. The refreshed in-memory credential is still usable.
+        pass
+
+
 def load_gmail_service():
     creds = Credentials.from_authorized_user_file(str(GOOGLE_TOKEN), GOOGLE_SCOPES)
     if creds.expired and creds.refresh_token:
         creds.refresh(GoogleAuthRequest())
-        GOOGLE_TOKEN.write_text(creds.to_json())
+        save_refreshed_credentials(creds)
     return build('gmail', 'v1', credentials=creds, cache_discovery=False)
 
 
