@@ -39,7 +39,7 @@ python3 scripts/update_prices.py
 
 ## Main Street Market visit page
 
-`visit.html` presents the silent market tour and directions to the two coin showcases at 140 N Main St, Mount Airy, NC. The homepage preview uses a still from the final seconds of the supplied video. The full MP4 loads on demand, preserves portrait framing, has no audio stream, and plays once on request and supports a shortcut to 97 seconds.
+`visit.html` presents the silent market tour and directions to the coin displays at 140 N Main St, Mount Airy, NC. The homepage preview uses a still from the final seconds of the supplied video. The full MP4 loads on demand, preserves portrait framing, has no audio stream, and plays once on request and supports a shortcut to 97 seconds.
 
 The compressed H.264 MP4 and poster images live in `assets/`. `visit.js` handles the visit-page menu and the showcase shortcut. Local-search titles, descriptions, sharing images, location information, VideoObject markup, and the sitemap use the repository's configured domain, `carsoncitytradingpost.com`. The market address and phone were checked against Visit Mayberry's Main Street Market listing; hours are intentionally left to the market to confirm.
 
