@@ -966,8 +966,6 @@ h1 { font-size: clamp(46px, 6.4vw, 82px); }
 .visit-film figcaption { padding: 14px 6px 6px; }
 .visit-film figcaption strong, .visit-film figcaption > span { display: block; }
 .visit-film figcaption > span { font-size: 14px; margin-top: 6px; }
-.tour-loop-option { display: flex; align-items: center; gap: 8px; font-size: 14px; padding-block: 12px; cursor: pointer; }
-.tour-loop-option input { width: 18px; height: 18px; margin: 0; accent-color: var(--copper-dark); }
 .visit-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 54px; padding-block: 52px; }
 .visit-details-grid h2 { font-size: 34px; line-height: 1.2; }
 .visit-details-grid h3 { font-size: 23px; margin-top: 18px; }
