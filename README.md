@@ -36,3 +36,11 @@ To refresh prices locally:
 cd /home/ubuntu/work/carsoncitytradingpost/site
 python3 scripts/update_prices.py
 ```
+
+## Main Street Market visit page
+
+`visit.html` presents the silent market tour and directions to the two coin showcases at 140 N Main St, Mount Airy, NC. The homepage preview uses a still from the final seconds of the supplied video. The full MP4 loads on demand, preserves portrait framing, has no audio stream, and supports an optional loop and a shortcut to 97 seconds. Reduced-motion preferences turn looping off by default.
+
+The compressed H.264 MP4 and poster images live in `assets/`. `visit.js` handles the visit-page menu and playback options. Local-search titles, descriptions, sharing images, location information, VideoObject markup, and the sitemap use the repository's configured domain, `carsoncitytradingpost.com`. The market address and phone were checked against Visit Mayberry's Main Street Market listing; hours are intentionally left to the market to confirm.
+
+For testing the showcase shortcut, use a local server with HTTP byte-range support; Python's basic `http.server` does not support video seeking. GitHub Pages supports byte ranges. Publishing happens only after this branch is merged/deployed. After publishing, verify the new page and media URLs and inspect the page in Google Search Console; local and video search placement is not guaranteed.

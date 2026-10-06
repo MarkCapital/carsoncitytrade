@@ -104,7 +104,7 @@ function cleanSourceLabel(source) {
     .replace(/snapshot/gi, 'pricing')
     .replace(/generated/gi, 'updated')
     .trim();
-  if (/Swissquote/i.test(cleaned)) return 'Swissquote market feed';
+  if (/Swissquote/i.test(cleaned)) return 'Swissquote market prices';
   return cleaned;
 }
 
