@@ -10,15 +10,6 @@ navLinks?.querySelectorAll('a').forEach((link) => link.addEventListener('click',
 }));
 
 const tour = document.querySelector('#market-tour');
-const loopOption = document.querySelector('#tour-loop');
-const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-function applyMotionPreference() {
-  loopOption.checked = !reducedMotion.matches;
-  tour.loop = loopOption.checked;
-}
-applyMotionPreference();
-reducedMotion.addEventListener('change', applyMotionPreference);
-loopOption.addEventListener('change', () => { tour.loop = loopOption.checked; });
 // Audio is removed from the MP4 itself; muted also documents the intended playback.
 tour.muted = true;
 
