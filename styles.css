@@ -940,3 +940,47 @@ h1 { font-size: clamp(46px, 6.4vw, 82px); }
   }
 }
 
+
+/* Main Street Market visit preview and silent tour. */
+.nav-links { flex-wrap: wrap; justify-content: flex-end; row-gap: 8px; }
+.nav-links a[aria-current="page"] { color: var(--copper-dark); text-decoration: underline; text-underline-offset: 5px; }
+.visit-preview-band, .visit-details-band { background: #fff8e8; border-block: 3px double rgba(95,47,23,.3); }
+.visit-preview-grid { display: grid; grid-template-columns: minmax(220px, 340px) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; padding-block: 56px; }
+.visit-preview-image { position: relative; display: block; max-width: 310px; border: 4px double rgba(95,47,23,.55); background: #2b2117; box-shadow: var(--shadow); }
+.visit-preview-image img { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; }
+.tour-image-label { position: absolute; bottom: 18px; left: 12px; right: 12px; padding: 12px 10px; background: #fff8e8; color: var(--copper-dark); text-align: center; font-weight: 900; border: 1px solid var(--copper-dark); }
+.visit-preview-copy h2 { font-size: clamp(30px, 3.6vw, 48px); line-height: 1.15; margin-block: 12px 20px; }
+.visit-preview-copy p:not(.eyebrow), .visit-tour-copy > p:not(.eyebrow), .visit-details-grid p { max-width: 660px; }
+.visit-address { font-weight: 900; }
+.visit-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-block: 22px; }
+.visit-tour-section { padding-block: 54px 64px; }
+.visit-tour-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 370px); gap: clamp(32px, 5vw, 72px); align-items: start; }
+.visit-tour-copy h1 { font-size: clamp(40px, 5vw, 64px); line-height: 1.1; margin-block: 12px 24px; }
+.visit-location-card { margin-top: 30px; padding: 24px; border: 3px double rgba(95,47,23,.4); background: #fff8e8; }
+.visit-location-card h2 { font-size: 26px; margin: 0 0 12px; }
+.visit-location-card address { font-style: normal; font-weight: 800; }
+.visit-small { font-size: 14px; line-height: 1.6; }
+.visit-small a, .visit-text-link { text-underline-offset: 3px; }
+.visit-film { margin: 0; padding: 10px; border: 4px double rgba(95,47,23,.45); background: #fff8e8; box-shadow: var(--shadow); }
+.visit-film video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; background: #211a13; }
+.visit-film figcaption { padding: 14px 6px 6px; }
+.visit-film figcaption strong, .visit-film figcaption > span { display: block; }
+.visit-film figcaption > span { font-size: 14px; margin-top: 6px; }
+.tour-loop-option { display: flex; align-items: center; gap: 8px; font-size: 14px; padding-block: 12px; cursor: pointer; }
+.tour-loop-option input { width: 18px; height: 18px; margin: 0; accent-color: var(--copper-dark); }
+.visit-details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 54px; padding-block: 52px; }
+.visit-details-grid h2 { font-size: 34px; line-height: 1.2; }
+.visit-details-grid h3 { font-size: 23px; margin-top: 18px; }
+.visit-text-link { font-weight: 900; }
+.visit-preview-image:focus-visible, .visit-film a:focus-visible, .visit-actions a:focus-visible { outline: 3px solid var(--copper-dark); outline-offset: 5px; }
+@media (max-width: 760px) {
+  .visit-tour-grid, .visit-preview-grid, .visit-details-grid { grid-template-columns: 1fr; gap: 28px; }
+  .visit-preview-copy { grid-row: 1; }
+  .visit-preview-image, .visit-film { width: min(100%, 360px); justify-self: center; }
+  .visit-tour-section, .visit-preview-grid, .visit-details-grid { padding-block: 36px; }
+  .visit-actions .button { width: 100%; text-align: center; }
+  .visit-location-card { padding: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+.tour-showcases { width: 100%; margin-top: 14px; font-size: 14px; }
