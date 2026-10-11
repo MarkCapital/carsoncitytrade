@@ -5,14 +5,16 @@ import html
 import json
 import os
 import re
-import secrets
-import time
 from email.message import EmailMessage
 from pathlib import Path
 from typing import Any
 
+from antispam import Store, verify_token
+from starlette.concurrency import run_in_threadpool
+from urllib.parse import urlsplit
+
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
@@ -26,6 +28,8 @@ CC_TO = 'carsoncity1889@gmail.com'
 SUCCESS_URL = 'https://carsoncitytradingpost.com/?contact=success#contact'
 MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024
 MAX_ATTACHMENTS = 5
+# Covers base64 plus worst-case URL encoding and normal multipart overhead.
+MAX_REQUEST_BYTES = 48 * 1024 * 1024
 ALLOWED_REASONS = {
     'Appraisal request',
     'I am interested in rare coins for sale',
@@ -36,12 +40,7 @@ ALLOWED_REASONS = {
     'Website contact form test',
 }
 LOCALHOSTS = {'127.0.0.1', '::1', 'localhost'}
-RATE_LIMIT_WINDOW_SECONDS = 10 * 60
-RATE_LIMIT_MAX_SUBMISSIONS = 2
-DUPLICATE_WINDOW_SECONDS = 6 * 60 * 60
 EMAIL_PATTERN = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
-RECENT_IP_SUBMISSIONS: dict[str, list[float]] = {}
-RECENT_DUPLICATE_KEYS: dict[str, float] = {}
 HERMES_HOME = Path(os.environ.get('HERMES_HOME', str(Path.home() / '.hermes')))
 GOOGLE_TOKEN = Path(
     os.environ.get(
@@ -100,23 +99,13 @@ def normalize_text(value: Any) -> str:
     return ' '.join(str(value or '').split()).strip()
 
 
+def internal_request(request: Request) -> bool:
+    # Caddy always supplies X-Forwarded-For. Never exempt a proxied request.
+    return client_host(request) in LOCALHOSTS and not request.headers.get("x-forwarded-for")
+
+
 def client_host(request: Request) -> str:
     return str((request.client.host if request.client else '') or '').strip()
-
-
-def cleanup_recent_submissions(now: float):
-    cutoff = now - RATE_LIMIT_WINDOW_SECONDS
-    for host, timestamps in list(RECENT_IP_SUBMISSIONS.items()):
-        remaining = [timestamp for timestamp in timestamps if timestamp >= cutoff]
-        if remaining:
-            RECENT_IP_SUBMISSIONS[host] = remaining
-        else:
-            RECENT_IP_SUBMISSIONS.pop(host, None)
-
-    duplicate_cutoff = now - DUPLICATE_WINDOW_SECONDS
-    for key, timestamp in list(RECENT_DUPLICATE_KEYS.items()):
-        if timestamp < duplicate_cutoff:
-            RECENT_DUPLICATE_KEYS.pop(key, None)
 
 
 def build_duplicate_key(request: Request, payload: dict[str, Any]) -> str:
@@ -141,44 +130,11 @@ def validate_request_context(request: Request, payload: dict[str, Any], wants_js
         raise ValueError('Origin header not allowed.')
 
     referer = normalize_text(request.headers.get('referer'))
-    if referer and not referer.startswith(ALLOWED_ORIGIN):
+    if referer and (urlsplit(referer).scheme + '://' + urlsplit(referer).netloc) != ALLOWED_ORIGIN:
         raise ValueError('Referer not allowed.')
 
-    if wants_json and payload.get('dryRun') is not True and client_host(request) not in LOCALHOSTS:
+    if wants_json and payload.get('dryRun') is not True and not internal_request(request):
         raise ValueError('JSON submissions are not allowed from public clients.')
-
-
-def ensure_submission_allowed(request: Request, payload: dict[str, Any]):
-    host = client_host(request)
-    if host in LOCALHOSTS:
-        return
-
-    now = time.time()
-    cleanup_recent_submissions(now)
-
-    recent_timestamps = RECENT_IP_SUBMISSIONS.get(host, [])
-    if len(recent_timestamps) >= RATE_LIMIT_MAX_SUBMISSIONS:
-        raise ValueError('Please wait a few minutes and try again.')
-
-    duplicate_key = build_duplicate_key(request, payload)
-    if duplicate_key:
-        prior_timestamp = RECENT_DUPLICATE_KEYS.get(duplicate_key)
-        if prior_timestamp and now - prior_timestamp < DUPLICATE_WINDOW_SECONDS:
-            raise ValueError('Duplicate submission detected. If you need to update your request, change the message or wait a bit and try again.')
-
-
-def record_submission(request: Request, payload: dict[str, Any]):
-    host = client_host(request)
-    if host in LOCALHOSTS:
-        return
-
-    now = time.time()
-    cleanup_recent_submissions(now)
-    RECENT_IP_SUBMISSIONS.setdefault(host, []).append(now)
-
-    duplicate_key = build_duplicate_key(request, payload)
-    if duplicate_key:
-        RECENT_DUPLICATE_KEYS[duplicate_key] = now
 
 
 def build_message(payload: dict[str, Any], attachments: list[tuple[str, str, bytes]]) -> str:
@@ -280,7 +236,7 @@ def error_html(message: str, target_url: str):
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Error</title></head>
 <body>
   <p>There was a problem sending your request.</p>
-  <p>{message}</p>
+  <p>{html.escape(message)}</p>
   <p>Please email <a href="mailto:{CC_TO}">{CC_TO}</a> directly.</p>
   <p><a href="{target_url}">Return to Carson City Trading Post</a></p>
 </body></html>''',
@@ -300,6 +256,7 @@ def parse_form_payload(form):
         'reason': form.get('reason') or '',
         'message': form.get('message') or '',
         'dryRun': str(form.get('dryRun') or '').lower() == 'true',
+        'cf-turnstile-response': form.get('cf-turnstile-response') or '',
         'attachments': json.loads(attachments_json),
     }
     return payload
@@ -326,21 +283,53 @@ async def submit(request: Request):
     wants_json = 'application/json' in content_type
     target_url = SUCCESS_URL
     try:
+        # Bound bytes even when Content-Length is absent or false. Reuse the
+        # bounded body for Starlette's JSON/multipart parser.
+        length = request.headers.get('content-length')
+        if length and (not length.isdigit() or int(length) > MAX_REQUEST_BYTES):
+            raise ValueError('Request exceeds the form size limit.')
+        chunks = []
+        total = 0
+        async for chunk in request.stream():
+            total += len(chunk)
+            if total > MAX_REQUEST_BYTES:
+                raise ValueError('Request exceeds the form size limit.')
+            chunks.append(chunk)
+        request._body = b''.join(chunks)
+        del chunks
         if wants_json:
             payload = await request.json()
         else:
-            form = await request.form()
+            form = await request.form(max_files=MAX_ATTACHMENTS, max_fields=20, max_part_size=MAX_REQUEST_BYTES)
             payload = parse_form_payload(form)
-            target_url = str(payload.get('redirect') or SUCCESS_URL).strip() or SUCCESS_URL
+            target_url = SUCCESS_URL
         validate_request_context(request, payload, wants_json)
         validate_payload(payload)
-        ensure_submission_allowed(request, payload)
         attachments, total_bytes = normalize_attachments(payload.get('attachments'))
         if payload.get('dryRun') is True:
             body = {'ok': True, 'dryRun': True, 'attachmentCount': len(attachments), 'totalBytes': total_bytes}
             return JSONResponse(body)
-        result = send_email(payload, attachments)
-        record_submission(request, payload)
+        reservation = None
+        if not internal_request(request):
+            if os.environ.get('CARSON_TURNSTILE_REQUIRED') == '1':
+                await run_in_threadpool(verify_token, payload.get('cf-turnstile-response'), client_host(request))
+            try:
+                reservation = await run_in_threadpool(Store().reserve, client_host(request),
+                    normalize_text(payload.get('email')), build_duplicate_key(request, payload))
+            except ValueError:
+                raise
+            except Exception:
+                raise ValueError('Submission is temporarily unavailable. Please email us directly.') from None
+        try:
+            result = await run_in_threadpool(send_email, payload, attachments)
+        except Exception:
+            if reservation:
+                try:
+                    await run_in_threadpool(Store().release, reservation)
+                except Exception:
+                    # Keep the reservation conservatively; never expose storage details.
+                    pass
+            raise ValueError('Delivery is temporarily unavailable. Please email us directly.') from None
         body = {
             'ok': True,
             'sent': True,
