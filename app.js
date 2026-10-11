@@ -376,6 +376,34 @@ function setupContactForm() {
   const note = document.querySelector('#formNote');
   const submitButton = form?.querySelector('button[type="submit"]');
   const attachmentInput = form?.querySelector('input[type="file"]');
+  const verification = document.querySelector('#contactVerification');
+  const sitekey = verification?.dataset.sitekey;
+  let verificationFailed = false;
+  if (sitekey) {
+    const script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+    let widgetId;
+    script.onload = () => {
+      widgetId = window.turnstile.render(verification, {
+        sitekey, action: 'contact', 'refresh-expired': 'manual',
+        callback: () => { verificationFailed = false; },
+        'expired-callback': () => {
+          verificationFailed = true;
+          window.turnstile.reset(widgetId);
+        },
+        'error-callback': () => {
+          verificationFailed = true;
+          if (note) note.textContent = 'Verification is unavailable. Please retry or email carsoncity1889@gmail.com.';
+        },
+      });
+    };
+    script.onerror = () => {
+      verificationFailed = true;
+      if (note) note.textContent = 'Verification is unavailable. Please reload or email carsoncity1889@gmail.com.';
+    };
+    script.async = true;
+    document.head.appendChild(script);
+  }
   const url = new URL(window.location.href);
   if (note && url.searchParams.get('contact') === 'success') {
     note.textContent = 'Thanks — your request was sent directly to Carson City Trading Post.';
@@ -412,13 +440,18 @@ function setupContactForm() {
         throw new Error('Message is required.');
       }
 
+      if (sitekey && (verificationFailed || !new FormData(form).get('cf-turnstile-response'))) {
+        throw new Error('Please complete verification.');
+      }
       form.submit();
     } catch (error) {
       if (attachmentInput?.dataset?.originalName) {
         attachmentInput.name = attachmentInput.dataset.originalName;
       }
       if (note) {
-        note.textContent = 'There was a problem sending your request. Please email carsoncity1889@gmail.com directly.';
+        note.textContent = sitekey && (verificationFailed || !new FormData(form).get('cf-turnstile-response'))
+          ? 'Please complete verification before sending. If verification is unavailable, email carsoncity1889@gmail.com.'
+          : 'There was a problem sending your request. Please email carsoncity1889@gmail.com directly.';
         note.classList.remove('success');
       }
       submitButton?.removeAttribute('disabled');
